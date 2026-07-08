@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A/B 测试样本量结果</title>
+  <style>
+    :root {
+      --ink: #111827;
+      --muted: #6b7280;
+      --line: #d9e0ea;
+      --soft: #f6f8fb;
+      --blue: #2563eb;
+      --warn: #fff7d6;
+      --warnText: #8a4b00;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #ffffff;
+      line-height: 1.45;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    h2 {
+      margin: 32px 0 12px;
+      font-size: 20px;
+    }
+
+    p {
+      margin: 6px 0;
+      color: var(--muted);
+    }
+
+    .meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 10px 0 14px;
+      color: #4b5563;
+      font-size: 14px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 840px;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #eef4ff;
+      color: #1f2937;
+      font-weight: 700;
+    }
+
+    th:first-child, td:first-child,
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .note {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--blue);
+      background: #f5f8ff;
+      color: #374151;
+    }
+
+    .control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0 16px;
+      padding: 12px;
+      background: var(--warn);
+      color: var(--warnText);
+      border: 1px solid #f3d27a;
+      border-radius: 8px;
+    }
+
+    input {
+      width: 96px;
+      padding: 8px 10px;
+      border: 1px solid #d6b75f;
+      border-radius: 6px;
+      font: inherit;
+      text-align: right;
+      background: #fff;
+    }
+
+    .verdict {
+      font-weight: 700;
+      color: #991b1b;
+    }
+
+    @media (max-width: 760px) {
+      main { padding: 24px 14px 36px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>A/B 测试样本量结果</h1>
+    <div class="meta">
+      <span>作者：Sissi / Codex</span>
+      <span>生成时间：2026-07-08 20:38</span>
+    </div>
+    <p>口径：双侧检验 α=0.05，power=80%，实验/对照 1:1，MDE=10%。下方只展示总样本量；实验天数按总样本量 / 当天用户数估算。</p>
+
+    <h2>指标样本量</h2>
+    <div class="control">
+      <label for="metricMde">指标 MDE</label>
+      <input id="metricMde" type="number" min="1" max="100" step="1" value="10" />
+      <span>%</span>
+      <span>改这个数，指标样本量和实验天数自动重算。</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>用户类型</th>
+            <th>指标</th>
+            <th>当天用户数</th>
+            <th>总样本量</th>
+            <th>实验天数</th>
+            <th>口径</th>
+          </tr>
+        </thead>
+        <tbody id="metricRows"></tbody>
+      </table>
+    </div>
+
+    <h2>付费率不掉：非劣检验</h2>
+    <p>这里不是问“有没有差异”，而是问“最多允许付费率下降多少”。默认按允许相对下降 10% 计算。</p>
+    <div class="control">
+      <label for="margin">允许相对下降</label>
+      <input id="margin" type="number" min="1" max="100" step="1" value="10" />
+      <span>%</span>
+      <span>改这个数，下面样本量自动重算。</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>用户类型</th>
+            <th>当天用户数</th>
+            <th>当前付费率</th>
+            <th>允许最大绝对下降</th>
+            <th>总样本量</th>
+            <th>实验天数</th>
+          </tr>
+        </thead>
+        <tbody id="nonInferiorityRows"></tbody>
+      </table>
+    </div>
+    <p class="note verdict">结论：如果新用户样本不足，还硬说“付费率没掉”，那就是拿噪声当结论。</p>
+
+    <h2>允许下降幅度敏感性</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>允许相对下降</th>
+            <th>老用户总样本</th>
+            <th>新用户总样本</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody id="sensitivityRows"></tbody>
+      </table>
+    </div>
+
+    <p class="note">ARPPU 的坑：付费用户总样本量不是全体用户总样本量。如果实验随机对象是全体用户，必须按付费率倒推总用户数。</p>
+  </main>
+
+  <script>
+    const users = [
+      {
+        name: "老用户",
+        currentUsers: 40334,
+        payRate: 0.017472829,
+        arpu: 0.296658862,
+        arpuStd: 3.307470012,
+        arppu: 16.96419606,
+        arppuStd: 18.52625257,
+        retention: 0.681419994,
+        sessions: 3.529897758,
+        sessionsStd: 5.082843155,
+        messages: 62.82526185,
+        messagesStd: 122.43749
+      },
+      {
+        name: "新用户",
+        currentUsers: 6164,
+        payRate: 0.021876758,
+        arpu: 0.522608614,
+        arpuStd: 4.844635993,
+        arppu: 23.89607389,
+        arppuStd: 22.75596685,
+        retention: 0.159889667,
+        sessions: 2.508358157,
+        sessionsStd: 3.28648634,
+        messages: 22.06630333,
+        messagesStd: 41.14544654
+      }
+    ];
+
+    const z = 2.4864748605243865;
+    const zTwoSided = 2.801621233;
+    const fmt = new Intl.NumberFormat("zh-CN");
+    const pct = value => `${(value * 100).toFixed(2)}%`;
+    const days = value => `${value.toFixed(2)} 天`;
+
+    function meanSampleSize(mean, std, mde) {
+      const delta = mean * mde;
+      return Math.ceil((2 * zTwoSided * zTwoSided * std * std) / (delta * delta));
+    }
+
+    function proportionSampleSize(rate, mde) {
+      const delta = rate * mde;
+      return Math.ceil((2 * zTwoSided * zTwoSided * rate * (1 - rate)) / (delta * delta));
+    }
+
+    function sampleSize(payRate, margin) {
+      const delta = payRate * margin;
+      return Math.ceil((z * z * 2 * payRate * (1 - payRate)) / (delta * delta));
+    }
+
+    function renderMetricRows() {
+      const mde = Math.max(0.01, Number(document.getElementById("metricMde").value || 10) / 100);
+      const rows = users.flatMap(user => {
+        const arppuPaid = meanSampleSize(user.arppu, user.arppuStd, mde);
+        const metricRows = [
+          ["ARPU", meanSampleSize(user.arpu, user.arpuStd, mde) * 2, "全体用户"],
+          ["ARPPU 付费用户", arppuPaid * 2, "付费用户"],
+          ["ARPPU 折算全体", Math.ceil(arppuPaid / user.payRate) * 2, "全体用户"],
+          ["付费率", proportionSampleSize(user.payRate, mde) * 2, "全体用户"],
+          ["次留率", proportionSampleSize(user.retention, mde) * 2, "全体用户"],
+          ["人均会话数", meanSampleSize(user.sessions, user.sessionsStd, mde) * 2, "全体用户"],
+          ["人均消息数", meanSampleSize(user.messages, user.messagesStd, mde) * 2, "全体用户"]
+        ];
+
+        return metricRows.map(([metric, total, scope]) => `<tr>
+          <td>${user.name}</td>
+          <td>${metric}</td>
+          <td>${fmt.format(user.currentUsers)}</td>
+          <td>${fmt.format(total)}</td>
+          <td>${days(total / user.currentUsers)}</td>
+          <td>${scope}</td>
+        </tr>`);
+      }).join("");
+
+      document.getElementById("metricRows").innerHTML = rows;
+    }
+
+    function renderNonInferiority() {
+      const margin = Math.max(0.01, Number(document.getElementById("margin").value || 10) / 100);
+      const rows = users.map(user => {
+        const n = sampleSize(user.payRate, margin);
+        return `<tr>
+          <td>${user.name}</td>
+          <td>${fmt.format(user.currentUsers)}</td>
+          <td>${pct(user.payRate)}</td>
+          <td>${pct(user.payRate * margin)}</td>
+          <td>${fmt.format(n * 2)}</td>
+          <td>${days((n * 2) / user.currentUsers)}</td>
+        </tr>`;
+      }).join("");
+      document.getElementById("nonInferiorityRows").innerHTML = rows;
+    }
+
+    function renderSensitivity() {
+      const margins = [
+        [0.05, "很严格，基本很难跑"],
+        [0.10, "默认口径"],
+        [0.15, "更现实"],
+        [0.20, "护栏更宽"]
+      ];
+      const rows = margins.map(([margin, note]) => {
+        const oldN = sampleSize(users[0].payRate, margin);
+        const newN = sampleSize(users[1].payRate, margin);
+        return `<tr>
+          <td>${Math.round(margin * 100)}%</td>
+          <td>${fmt.format(oldN * 2)}</td>
+          <td>${fmt.format(newN * 2)}</td>
+          <td>${note}</td>
+        </tr>`;
+      }).join("");
+      document.getElementById("sensitivityRows").innerHTML = rows;
+    }
+
+    document.getElementById("metricMde").addEventListener("input", renderMetricRows);
+    document.getElementById("margin").addEventListener("input", renderNonInferiority);
+    renderMetricRows();
+    renderNonInferiority();
+    renderSensitivity();
+  </script>
+</body>
+</html>
