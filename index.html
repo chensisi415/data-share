@@ -172,7 +172,10 @@
       <label for="margin">允许相对下降</label>
       <input id="margin" type="number" min="1" max="100" step="1" value="10" />
       <span>%</span>
-      <span>改这个数，下面样本量自动重算。</span>
+      <label for="guardrailTrafficRatio">实验分流比例</label>
+      <input id="guardrailTrafficRatio" type="number" min="1" max="100" step="1" value="100" />
+      <span>%</span>
+      <span>改这两个数，下面样本量和实验天数自动重算。</span>
     </div>
     <div class="table-wrap">
       <table>
@@ -247,6 +250,14 @@
     const pct = value => `${(value * 100).toFixed(2)}%`;
     const days = value => `${value.toFixed(2)} 天`;
     const trafficRatio = () => Math.max(0.01, Number(document.getElementById("trafficRatio").value || 100) / 100);
+
+    function syncTrafficRatio(sourceId) {
+      const source = document.getElementById(sourceId);
+      const targetId = sourceId === "trafficRatio" ? "guardrailTrafficRatio" : "trafficRatio";
+      document.getElementById(targetId).value = source.value;
+      renderMetricRows();
+      renderNonInferiority();
+    }
 
     function meanSampleSize(mean, std, mde) {
       const delta = mean * mde;
@@ -329,10 +340,8 @@
     }
 
     document.getElementById("metricMde").addEventListener("input", renderMetricRows);
-    document.getElementById("trafficRatio").addEventListener("input", () => {
-      renderMetricRows();
-      renderNonInferiority();
-    });
+    document.getElementById("trafficRatio").addEventListener("input", () => syncTrafficRatio("trafficRatio"));
+    document.getElementById("guardrailTrafficRatio").addEventListener("input", () => syncTrafficRatio("guardrailTrafficRatio"));
     document.getElementById("margin").addEventListener("input", renderNonInferiority);
     renderMetricRows();
     renderNonInferiority();
