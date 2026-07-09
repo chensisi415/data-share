@@ -138,7 +138,7 @@
       <span>作者：Sissi / Codex</span>
       <span>生成时间：2026-07-08 20:38</span>
     </div>
-    <p>口径：双侧检验 α=0.05，power=80%，实验/对照 1:1，MDE=10%。下方只展示总样本量；实验天数按总样本量 / (当天用户数 × 实验分流比例) 估算。</p>
+    <p>口径：双侧检验 α=0.05，power=80%，实验/对照 1:1，MDE=10%。下方只展示总样本量；进实验用户数/天 = 全量当天用户数 × 实验分流比例。</p>
 
     <h2>指标样本量</h2>
     <div class="control">
@@ -156,7 +156,7 @@
           <tr>
             <th>用户类型</th>
             <th>指标</th>
-            <th>当天用户数</th>
+            <th>进实验用户数/天</th>
             <th>总样本量</th>
             <th>实验天数</th>
             <th>口径</th>
@@ -179,7 +179,7 @@
         <thead>
           <tr>
             <th>用户类型</th>
-            <th>当天用户数</th>
+            <th>进实验用户数/天</th>
             <th>当前付费率</th>
             <th>允许最大绝对下降</th>
             <th>总样本量</th>
@@ -281,7 +281,7 @@
         return metricRows.map(([metric, total, scope]) => `<tr>
           <td>${user.name}</td>
           <td>${metric}</td>
-          <td>${fmt.format(user.currentUsers)}</td>
+          <td>${fmt.format(Math.round(user.currentUsers * traffic))}</td>
           <td>${fmt.format(total)}</td>
           <td>${days(total / (user.currentUsers * traffic))}</td>
           <td>${scope}</td>
@@ -298,7 +298,7 @@
         const n = sampleSize(user.payRate, margin);
         return `<tr>
           <td>${user.name}</td>
-          <td>${fmt.format(user.currentUsers)}</td>
+          <td>${fmt.format(Math.round(user.currentUsers * traffic))}</td>
           <td>${pct(user.payRate)}</td>
           <td>${pct(user.payRate * margin)}</td>
           <td>${fmt.format(n * 2)}</td>
