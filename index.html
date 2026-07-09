@@ -138,14 +138,17 @@
       <span>作者：Sissi / Codex</span>
       <span>生成时间：2026-07-08 20:38</span>
     </div>
-    <p>口径：双侧检验 α=0.05，power=80%，实验/对照 1:1，MDE=10%。下方只展示总样本量；实验天数按总样本量 / 当天用户数估算。</p>
+    <p>口径：双侧检验 α=0.05，power=80%，实验/对照 1:1，MDE=10%。下方只展示总样本量；实验天数按总样本量 / (当天用户数 × 实验分流比例) 估算。</p>
 
     <h2>指标样本量</h2>
     <div class="control">
       <label for="metricMde">指标 MDE</label>
       <input id="metricMde" type="number" min="1" max="100" step="1" value="10" />
       <span>%</span>
-      <span>改这个数，指标样本量和实验天数自动重算。</span>
+      <label for="trafficRatio">实验分流比例</label>
+      <input id="trafficRatio" type="number" min="1" max="100" step="1" value="100" />
+      <span>%</span>
+      <span>改这两个数，样本量和实验天数自动重算。</span>
     </div>
     <div class="table-wrap">
       <table>
@@ -243,6 +246,7 @@
     const fmt = new Intl.NumberFormat("zh-CN");
     const pct = value => `${(value * 100).toFixed(2)}%`;
     const days = value => `${value.toFixed(2)} 天`;
+    const trafficRatio = () => Math.max(0.01, Number(document.getElementById("trafficRatio").value || 100) / 100);
 
     function meanSampleSize(mean, std, mde) {
       const delta = mean * mde;
@@ -261,6 +265,7 @@
 
     function renderMetricRows() {
       const mde = Math.max(0.01, Number(document.getElementById("metricMde").value || 10) / 100);
+      const traffic = trafficRatio();
       const rows = users.flatMap(user => {
         const arppuPaid = meanSampleSize(user.arppu, user.arppuStd, mde);
         const metricRows = [
@@ -278,7 +283,7 @@
           <td>${metric}</td>
           <td>${fmt.format(user.currentUsers)}</td>
           <td>${fmt.format(total)}</td>
-          <td>${days(total / user.currentUsers)}</td>
+          <td>${days(total / (user.currentUsers * traffic))}</td>
           <td>${scope}</td>
         </tr>`);
       }).join("");
@@ -288,6 +293,7 @@
 
     function renderNonInferiority() {
       const margin = Math.max(0.01, Number(document.getElementById("margin").value || 10) / 100);
+      const traffic = trafficRatio();
       const rows = users.map(user => {
         const n = sampleSize(user.payRate, margin);
         return `<tr>
@@ -296,7 +302,7 @@
           <td>${pct(user.payRate)}</td>
           <td>${pct(user.payRate * margin)}</td>
           <td>${fmt.format(n * 2)}</td>
-          <td>${days((n * 2) / user.currentUsers)}</td>
+          <td>${days((n * 2) / (user.currentUsers * traffic))}</td>
         </tr>`;
       }).join("");
       document.getElementById("nonInferiorityRows").innerHTML = rows;
@@ -323,6 +329,10 @@
     }
 
     document.getElementById("metricMde").addEventListener("input", renderMetricRows);
+    document.getElementById("trafficRatio").addEventListener("input", () => {
+      renderMetricRows();
+      renderNonInferiority();
+    });
     document.getElementById("margin").addEventListener("input", renderNonInferiority);
     renderMetricRows();
     renderNonInferiority();
