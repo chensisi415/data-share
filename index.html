@@ -249,15 +249,7 @@
     const fmt = new Intl.NumberFormat("zh-CN");
     const pct = value => `${(value * 100).toFixed(2)}%`;
     const days = value => `${value.toFixed(2)} 天`;
-    const trafficRatio = () => Math.max(0.01, Number(document.getElementById("trafficRatio").value || 100) / 100);
-
-    function syncTrafficRatio(sourceId) {
-      const source = document.getElementById(sourceId);
-      const targetId = sourceId === "trafficRatio" ? "guardrailTrafficRatio" : "trafficRatio";
-      document.getElementById(targetId).value = source.value;
-      renderMetricRows();
-      renderNonInferiority();
-    }
+    const readRatio = id => Math.max(0.01, Number(document.getElementById(id).value || 100) / 100);
 
     function meanSampleSize(mean, std, mde) {
       const delta = mean * mde;
@@ -276,7 +268,7 @@
 
     function renderMetricRows() {
       const mde = Math.max(0.01, Number(document.getElementById("metricMde").value || 10) / 100);
-      const traffic = trafficRatio();
+      const traffic = readRatio("trafficRatio");
       const rows = users.flatMap(user => {
         const arppuPaid = meanSampleSize(user.arppu, user.arppuStd, mde);
         const metricRows = [
@@ -304,7 +296,7 @@
 
     function renderNonInferiority() {
       const margin = Math.max(0.01, Number(document.getElementById("margin").value || 10) / 100);
-      const traffic = trafficRatio();
+      const traffic = readRatio("guardrailTrafficRatio");
       const rows = users.map(user => {
         const n = sampleSize(user.payRate, margin);
         return `<tr>
@@ -340,8 +332,8 @@
     }
 
     document.getElementById("metricMde").addEventListener("input", renderMetricRows);
-    document.getElementById("trafficRatio").addEventListener("input", () => syncTrafficRatio("trafficRatio"));
-    document.getElementById("guardrailTrafficRatio").addEventListener("input", () => syncTrafficRatio("guardrailTrafficRatio"));
+    document.getElementById("trafficRatio").addEventListener("input", renderMetricRows);
+    document.getElementById("guardrailTrafficRatio").addEventListener("input", renderNonInferiority);
     document.getElementById("margin").addEventListener("input", renderNonInferiority);
     renderMetricRows();
     renderNonInferiority();
