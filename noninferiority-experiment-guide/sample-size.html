@@ -89,9 +89,11 @@
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(320px, .9fr) minmax(360px, 1.1fr);
-      gap: 18px;
+      grid-template-columns: 1fr;
+      gap: 20px;
       align-items: start;
+      max-width: 980px;
+      margin: 0 auto;
     }
 
     .panel {
@@ -178,15 +180,16 @@
     .result-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 16px;
     }
 
     .stat {
       border: 1px solid var(--line);
       background: #f6f1e6;
-      padding: 14px;
-      min-height: 124px;
+      padding: 16px;
+      min-height: 132px;
+      min-width: 0;
     }
 
     .stat strong {
@@ -198,8 +201,11 @@
 
     .stat b {
       display: block;
-      font-size: clamp(28px, 4vw, 44px);
+      font-size: clamp(30px, 4.2vw, 52px);
       line-height: 1;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
     }
 
     .stat.green {
@@ -262,7 +268,8 @@
     }
 
     .compare {
-      margin-top: 18px;
+      max-width: 980px;
+      margin: 20px auto 0;
       border: 1px solid var(--line);
       background: rgba(255, 253, 247, .86);
       padding: 16px;
@@ -295,9 +302,12 @@
     }
 
     @media (max-width: 900px) {
-      .layout,
       .result-grid {
         grid-template-columns: 1fr;
+      }
+
+      .stat {
+        min-height: auto;
       }
     }
 
