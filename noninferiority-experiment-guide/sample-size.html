@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>非劣实验样本量计算器</title>
+  <style>
+    :root {
+      --paper: #f7f3ea;
+      --panel: #fffdf7;
+      --ink: #202018;
+      --muted: #6c665c;
+      --line: #d8cdbc;
+      --green: #176f46;
+      --green-soft: #dceee3;
+      --red: #b43c32;
+      --red-soft: #f4ddd8;
+      --blue: #1d5f93;
+      --blue-soft: #dceafa;
+      --yellow: #f3e5b6;
+      --shadow: 0 22px 60px rgba(60, 44, 20, .12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(32, 32, 24, .05) 1px, transparent 1px) 0 0 / 36px 36px,
+        linear-gradient(180deg, #faf8f1 0%, var(--paper) 100%);
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      line-height: 1.62;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 22px 70px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 26px;
+    }
+
+    .back {
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      background: rgba(255, 253, 247, .82);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 9px;
+      border: 1px solid var(--ink);
+      background: var(--yellow);
+      box-shadow: 4px 4px 0 var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      max-width: 860px;
+      font-family: "Iowan Old Style", "STSong", "Songti SC", serif;
+      font-size: clamp(42px, 6vw, 76px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 850px;
+      margin: 0 0 28px;
+      color: var(--muted);
+      font-size: 19px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, .9fr) minmax(360px, 1.1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 2px solid var(--ink);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-title {
+      padding: 14px 16px;
+      border-bottom: 2px solid var(--ink);
+      background: var(--ink);
+      color: #fffdf7;
+      font-weight: 900;
+    }
+
+    .panel-body {
+      padding: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      font-weight: 900;
+    }
+
+    label span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      padding: 12px;
+      border-radius: 6px;
+      font: 800 16px/1.2 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 3px solid rgba(29, 95, 147, .18);
+      border-color: var(--blue);
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    button {
+      border: 2px solid var(--ink);
+      background: var(--yellow);
+      color: var(--ink);
+      padding: 11px 14px;
+      border-radius: 6px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    button.secondary {
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: #f6f1e6;
+      padding: 14px;
+      min-height: 124px;
+    }
+
+    .stat strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat b {
+      display: block;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1;
+    }
+
+    .stat.green {
+      background: var(--green-soft);
+    }
+
+    .stat.blue {
+      background: var(--blue-soft);
+    }
+
+    .formula {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 16px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 14px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    details {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    summary {
+      padding: 13px 16px;
+      cursor: pointer;
+      font-weight: 900;
+      list-style-position: inside;
+    }
+
+    details .details-body {
+      display: grid;
+      gap: 12px;
+      padding: 0 16px 16px;
+    }
+
+    .note {
+      border-left: 8px solid var(--blue);
+      background: var(--blue-soft);
+      padding: 14px 16px;
+      font-weight: 800;
+    }
+
+    .note.red {
+      border-left-color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .note.green {
+      border-left-color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .compare {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 253, 247, .86);
+      padding: 16px;
+    }
+
+    .compare h2 {
+      margin: 0 0 10px;
+      font-family: "Iowan Old Style", "STSong", "Songti SC", serif;
+      font-size: 26px;
+    }
+
+    .compare table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    .compare th,
+    .compare td {
+      border: 1px solid var(--line);
+      padding: 11px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    .compare th {
+      background: var(--ink);
+      color: #fffdf7;
+    }
+
+    @media (max-width: 900px) {
+      .layout,
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: 22px 14px 48px;
+      }
+
+      .top,
+      .two {
+        grid-template-columns: 1fr;
+      }
+
+      .top {
+        display: grid;
+        align-items: start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="top">
+      <a class="back" href="./index.html">返回科普文档</a>
+      <span class="tag">NON-INFERIORITY SAMPLE SIZE</span>
+    </div>
+
+    <header>
+      <h1>非劣实验样本量计算器</h1>
+      <p class="lead">适用于 ARPU、收入、时长等连续型指标的近似估算。它回答的不是“新方案能不能提升”，而是“需要多少样本，才能证明新方案没有跌破业务底线”。</p>
+    </header>
+
+    <section class="layout">
+      <div class="panel">
+        <div class="panel-title">输入参数</div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <label>
+              旧版本 ARPU
+              <span>用于展示业务底线，不直接进入简化公式</span>
+              <input id="baseline" type="number" value="10" min="0" step="0.01">
+            </label>
+
+            <label>
+              ARPU 标准差 σ
+              <span>建议来自历史实验或近 7-30 天用户级 ARPU</span>
+              <input id="sd" type="number" value="30" min="0.0001" step="0.01">
+            </label>
+
+            <div class="two">
+              <label>
+                最多接受下降金额
+                <span>例如最多接受 ARPU 下降 0.3 元</span>
+                <input id="margin" type="number" value="0.3" min="0.0001" step="0.01">
+              </label>
+
+              <label>
+                预期真实差异 d
+                <span>新方案 - 旧方案；通常先填 0</span>
+                <input id="expectedDiff" type="number" value="0" step="0.01">
+              </label>
+            </div>
+
+            <div class="two">
+              <label>
+                显著性水平 α
+                <span>非劣检验通常用单侧 α</span>
+                <select id="alpha">
+                  <option value="0.1">0.10</option>
+                  <option value="0.05" selected>0.05</option>
+                  <option value="0.025">0.025</option>
+                  <option value="0.01">0.01</option>
+                </select>
+              </label>
+
+              <label>
+                检验功效 Power
+                <span>常用 80% 或 90%</span>
+                <select id="power">
+                  <option value="0.8" selected>80%</option>
+                  <option value="0.85">85%</option>
+                  <option value="0.9">90%</option>
+                  <option value="0.95">95%</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="button-row">
+              <button id="calc" type="button">计算样本量</button>
+              <button id="reset" class="secondary" type="button">恢复示例</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">计算结果</div>
+        <div class="panel-body">
+          <div class="result-grid">
+            <div class="stat green">
+              <strong>每组样本量</strong>
+              <b id="perGroup">-</b>
+              <span class="small">实验组和对照组各需要</span>
+            </div>
+            <div class="stat blue">
+              <strong>总样本量</strong>
+              <b id="total">-</b>
+              <span class="small">默认 1:1 分流</span>
+            </div>
+            <div class="stat">
+              <strong>离底线的空间</strong>
+              <b id="distance">-</b>
+              <span class="small">空间越小，需要样本越多</span>
+            </div>
+          </div>
+
+          <div class="note green" id="decision">填写参数后会自动计算。</div>
+
+          <details>
+            <summary>高级说明：公式与统计口径</summary>
+            <div class="details-body">
+              <div class="formula" id="formula">
+n ≈ 2 × σ² × (Zα + Zβ)² / (d - δ)²
+              </div>
+              <div class="note">
+                非劣边界 δ 代表最多可接受的下降。若最多接受 ARPU 下降 0.3 元，则 δ = -0.3；公式里使用的是“预期差异到非劣边界的距离”。
+              </div>
+              <div class="note red">
+                ARPU 可能受少数高消费用户影响。若近期活动、付费结构或用户分层变化较大，建议让数据同学用历史用户级数据复核一次。
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="compare">
+      <h2>和普通 A/B 样本量的差异</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>类型</th>
+            <th>分母里的关键距离</th>
+            <th>它在问什么</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>普通 A/B</td>
+            <td>MDE²，例如想检测 ARPU 提升 0.5 元</td>
+            <td>需要多少样本，才能发现我关心的提升或差异？</td>
+          </tr>
+          <tr>
+            <td>非劣实验</td>
+            <td>(d - δ)²，例如预期差异 0，非劣边界 -0.3，则距离是 0.3</td>
+            <td>需要多少样本，才能证明新方案没有跌破业务底线？</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    const defaults = {
+      baseline: 10,
+      sd: 30,
+      margin: 0.3,
+      expectedDiff: 0,
+      alpha: 0.05,
+      power: 0.8
+    };
+
+    const ids = ["baseline", "sd", "margin", "expectedDiff", "alpha", "power"];
+
+    function normalQuantile(p) {
+      if (p <= 0 || p >= 1) return NaN;
+      const a = [-39.69683028665376, 220.9460984245205, -275.9285104469687, 138.3577518672690, -30.66479806614716, 2.506628277459239];
+      const b = [-54.47609879822406, 161.5858368580409, -155.6989798598866, 66.80131188771972, -13.28068155288572];
+      const c = [-0.007784894002430293, -0.3223964580411365, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783];
+      const d = [0.007784695709041462, 0.3224671290700398, 2.445134137142996, 3.754408661907416];
+      const plow = 0.02425;
+      const phigh = 1 - plow;
+      let q;
+      let r;
+
+      if (p < plow) {
+        q = Math.sqrt(-2 * Math.log(p));
+        return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+          ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+      }
+
+      if (p > phigh) {
+        q = Math.sqrt(-2 * Math.log(1 - p));
+        return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) /
+          ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+      }
+
+      q = p - 0.5;
+      r = q * q;
+      return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q /
+        (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+    }
+
+    function numberValue(id) {
+      return Number(document.getElementById(id).value);
+    }
+
+    function formatInt(value) {
+      return Math.ceil(value).toLocaleString("zh-CN");
+    }
+
+    function formatMoney(value) {
+      return value.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function calculate() {
+      const baseline = numberValue("baseline");
+      const sd = numberValue("sd");
+      const margin = numberValue("margin");
+      const expectedDiff = numberValue("expectedDiff");
+      const alpha = numberValue("alpha");
+      const power = numberValue("power");
+      const delta = -margin;
+      const distance = expectedDiff - delta;
+      const zAlpha = normalQuantile(1 - alpha);
+      const zBeta = normalQuantile(power);
+      const decision = document.getElementById("decision");
+
+      if ([baseline, sd, margin, expectedDiff, alpha, power].some((v) => Number.isNaN(v)) || sd <= 0 || margin <= 0 || distance <= 0) {
+        document.getElementById("perGroup").textContent = "-";
+        document.getElementById("total").textContent = "-";
+        document.getElementById("distance").textContent = "-";
+        decision.textContent = "参数不成立：标准差和最多接受下降必须大于 0，且预期差异必须高于非劣边界。";
+        decision.className = "note red";
+        return;
+      }
+
+      const perGroup = 2 * sd * sd * Math.pow(zAlpha + zBeta, 2) / Math.pow(distance, 2);
+      const total = perGroup * 2;
+      const worstAcceptable = baseline - margin;
+
+      document.getElementById("perGroup").textContent = formatInt(perGroup);
+      document.getElementById("total").textContent = formatInt(total);
+      document.getElementById("distance").textContent = formatMoney(distance);
+
+      decision.textContent = `如果旧版 ARPU 是 ${formatMoney(baseline)} 元，最多接受下降 ${formatMoney(margin)} 元，则业务底线是 ${formatMoney(worstAcceptable)} 元。按当前参数估算，每组约需要 ${formatInt(perGroup)} 个用户。`;
+      decision.className = "note green";
+
+      document.getElementById("formula").textContent =
+        `n ≈ 2 × σ² × (Zα + Zβ)² / (d - δ)²\n` +
+        `  ≈ 2 × ${formatMoney(sd)}² × (${zAlpha.toFixed(3)} + ${zBeta.toFixed(3)})² / ${formatMoney(distance)}²\n` +
+        `  ≈ ${formatInt(perGroup)} / 组\n\n` +
+        `其中非劣边界 δ = -${formatMoney(margin)}，预期差异 d = ${formatMoney(expectedDiff)}，离底线的空间 d - δ = ${formatMoney(distance)}。`;
+    }
+
+    function reset() {
+      for (const id of ids) {
+        document.getElementById(id).value = defaults[id];
+      }
+      calculate();
+    }
+
+    for (const id of ids) {
+      document.getElementById(id).addEventListener("input", calculate);
+      document.getElementById(id).addEventListener("change", calculate);
+    }
+
+    document.getElementById("calc").addEventListener("click", calculate);
+    document.getElementById("reset").addEventListener("click", reset);
+    calculate();
+  </script>
+</body>
+</html>
