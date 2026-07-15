@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>非劣实验科普与评审 Checklist</title>
+  <style>
+    :root {
+      --paper: #fbfaf6;
+      --ink: #1c1b17;
+      --muted: #686157;
+      --line: #d8d0c2;
+      --green: #146c43;
+      --green-soft: #dceee3;
+      --red: #b33a2f;
+      --red-soft: #f3d9d4;
+      --blue: #1f5f8b;
+      --blue-soft: #dbe7f3;
+      --yellow: #936b00;
+      --yellow-soft: #f3e8c5;
+      --charcoal: #2b2a25;
+      --white: #fffefa;
+      --shadow: 0 22px 60px rgba(54, 42, 25, .12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16px 16px, rgba(28, 27, 23, .06) 1px, transparent 1.2px) 0 0 / 28px 28px,
+        linear-gradient(145deg, #f8f2e7 0%, var(--paper) 42%, #f4f7f3 100%);
+      font-family: "Iowan Old Style", "Palatino Linotype", "STSong", "Songti SC", serif;
+      line-height: 1.72;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin: -40px -24px 32px;
+      padding: 12px 24px;
+      border-bottom: 1px solid rgba(28, 27, 23, .1);
+      background: rgba(251, 250, 246, .86);
+      backdrop-filter: blur(14px);
+      font-family: "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .topbar-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--ink);
+      background: var(--yellow-soft);
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    nav {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    nav a,
+    .print-button {
+      border: 1px solid rgba(28, 27, 23, .16);
+      background: rgba(255, 254, 250, .72);
+      color: var(--charcoal);
+      padding: 7px 10px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 13px;
+      font-family: "Avenir Next", "PingFang SC", sans-serif;
+      cursor: pointer;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(320px, .88fr);
+      gap: 34px;
+      align-items: stretch;
+      min-height: 560px;
+      padding: 30px 0 52px;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      margin: 0 0 18px;
+      padding: 5px 9px;
+      border: 1px solid var(--ink);
+      background: var(--white);
+      box-shadow: 4px 4px 0 var(--ink);
+      font: 800 13px/1.4 "Avenir Next", "PingFang SC", sans-serif;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(48px, 7vw, 92px);
+      line-height: .96;
+      letter-spacing: 0;
+      font-weight: 900;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: 21px;
+    }
+
+    .hero-warning {
+      margin-top: 28px;
+      padding: 16px 18px;
+      border-left: 8px solid var(--red);
+      background: var(--red-soft);
+      font: 800 18px/1.5 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .hero-board {
+      overflow: hidden;
+      border: 2px solid var(--ink);
+      background: var(--white);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .board-title {
+      padding: 15px 18px;
+      border-bottom: 2px solid var(--ink);
+      background: var(--charcoal);
+      color: var(--white);
+      font: 800 15px/1.4 "Avenir Next", "PingFang SC", sans-serif;
+      letter-spacing: .04em;
+    }
+
+    .chart-panel {
+      margin: 22px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: #fffefa;
+    }
+
+    .chart-head {
+      display: grid;
+      grid-template-columns: 27% 38% 35%;
+      margin-bottom: 8px;
+      font: 900 13px/1.35 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .chart-head span {
+      display: block;
+      min-width: 0;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      text-align: center;
+    }
+
+    .chart-head .danger-head {
+      color: var(--red);
+    }
+
+    .chart-head .ok-head {
+      grid-column: 2 / 4;
+      color: var(--green);
+    }
+
+    .chart-scale {
+      position: relative;
+      min-height: 190px;
+      border: 1px solid var(--line);
+      background: linear-gradient(90deg, var(--red-soft) 0 27%, var(--green-soft) 27% 100%);
+    }
+
+    .chart-scale::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 42px 0;
+      width: 27%;
+      background: repeating-linear-gradient(135deg, var(--red-soft), var(--red-soft) 9px, rgba(179, 58, 47, .2) 9px, rgba(179, 58, 47, .2) 18px);
+    }
+
+    .chart-scale::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 42px;
+      height: 3px;
+      background: var(--ink);
+    }
+
+    .boundary-line {
+      position: absolute;
+      left: 27%;
+      top: 18px;
+      bottom: 30px;
+      width: 3px;
+      background: var(--red);
+      z-index: 2;
+    }
+
+    .baseline-line {
+      position: absolute;
+      left: 65%;
+      top: 52px;
+      bottom: 30px;
+      width: 2px;
+      background: rgba(31, 95, 139, .48);
+      z-index: 2;
+    }
+
+    .chart-zone-label {
+      position: absolute;
+      top: 58px;
+      padding: 6px 8px;
+      border: 1px solid rgba(28, 27, 23, .15);
+      background: rgba(255, 254, 250, .86);
+      font: 900 13px/1.35 "Avenir Next", "PingFang SC", sans-serif;
+      text-align: center;
+      z-index: 3;
+    }
+
+    .chart-zone-label.danger {
+      left: 18px;
+      max-width: calc(27% - 28px);
+      color: var(--red);
+    }
+
+    .chart-zone-label.ok {
+      left: 42%;
+      color: var(--green);
+    }
+
+    .interval-line {
+      position: absolute;
+      left: 36%;
+      right: 15%;
+      top: 96px;
+      height: 15px;
+      border-left: 4px solid var(--blue);
+      border-right: 4px solid var(--blue);
+      border-top: 4px solid var(--blue);
+      z-index: 4;
+    }
+
+    .interval-line::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -13px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid var(--ink);
+      background: var(--blue-soft);
+      transform: translateX(-50%);
+    }
+
+    .interval-text {
+      position: absolute;
+      left: 34%;
+      right: 12%;
+      top: 124px;
+      padding: 7px 9px;
+      border: 1px solid var(--ink);
+      background: var(--white);
+      color: var(--blue);
+      font: 900 13px/1.35 "Avenir Next", "PingFang SC", sans-serif;
+      text-align: center;
+      z-index: 4;
+    }
+
+    .tick-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+      font: 900 13px/1.35 "Avenir Next", "PingFang SC", sans-serif;
+      color: var(--muted);
+    }
+
+    .tick-row span {
+      min-width: 0;
+    }
+
+    .tick-row span:nth-child(2) {
+      color: var(--red);
+      text-align: center;
+    }
+
+    .tick-row span:nth-child(3),
+    .tick-row span:nth-child(4) {
+      text-align: right;
+    }
+
+    .board-note {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0 22px 22px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: #fff8df;
+      font: 700 13px/1.45 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .board-note span {
+      display: block;
+      padding: 10px;
+      border: 1px solid rgba(28, 27, 23, .12);
+      background: rgba(255, 254, 250, .72);
+    }
+
+    .board-note b {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    section {
+      margin: 34px 0;
+    }
+
+    .section-title {
+      display: flex;
+      gap: 14px;
+      align-items: baseline;
+      margin: 0 0 16px;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 8px;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font: 800 14px/1 "Avenir Next", "PingFang SC", sans-serif;
+      letter-spacing: .12em;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font: 900 20px/1.28 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    p {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .callout,
+    .check-card {
+      border: 1px solid var(--line);
+      background: rgba(255, 254, 250, .88);
+      box-shadow: 0 12px 28px rgba(54, 42, 25, .07);
+    }
+
+    .card {
+      padding: 20px;
+    }
+
+    .card strong {
+      font-family: "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .callout {
+      padding: 20px;
+      border-left: 9px solid var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .callout.red {
+      border-left-color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .callout.green {
+      border-left-color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .formula {
+      margin: 18px 0 0;
+      padding: 16px;
+      border: 2px solid var(--ink);
+      background: var(--white);
+      font: 900 22px/1.45 "Avenir Next", "PingFang SC", sans-serif;
+      text-align: center;
+    }
+
+    .compare {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .compare th,
+    .compare td {
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 16px;
+    }
+
+    .compare th {
+      background: var(--charcoal);
+      color: var(--white);
+      font: 800 15px/1.4 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .compare td:first-child {
+      width: 18%;
+      font-weight: 900;
+      font-family: "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .mini-tag {
+      display: inline-block;
+      margin: 0 0 8px;
+      padding: 4px 8px;
+      border: 1px solid var(--ink);
+      background: var(--yellow-soft);
+      font: 800 12px/1.3 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      padding: 18px 18px 18px 70px;
+      border: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--ink);
+      background: var(--yellow-soft);
+      font: 900 17px/1 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .result-card {
+      padding: 18px;
+      border-top: 7px solid var(--green);
+      min-height: 230px;
+    }
+
+    .result-card.warn {
+      border-top-color: var(--yellow);
+    }
+
+    .result-card.bad {
+      border-top-color: var(--red);
+    }
+
+    .case-box {
+      border: 2px solid var(--ink);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .case-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 2px solid var(--ink);
+      background: var(--charcoal);
+      color: var(--white);
+    }
+
+    .case-header h3 {
+      margin: 0;
+      color: var(--white);
+    }
+
+    .case-body {
+      padding: 22px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .metric {
+      padding: 13px;
+      border: 1px solid var(--line);
+      background: #f7f4ea;
+      font-family: "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .metric b {
+      display: block;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .myth {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .myth-mark {
+      width: 56px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--red);
+      color: var(--red);
+      font: 900 30px/1 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .checklist {
+      margin-top: 58px;
+      padding: 24px;
+      border: 3px solid var(--ink);
+      background: linear-gradient(180deg, var(--white), #f4efe3);
+      box-shadow: var(--shadow);
+    }
+
+    .checklist-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .checklist h2 {
+      font-size: clamp(34px, 4vw, 56px);
+    }
+
+    .stamp {
+      transform: rotate(3deg);
+      border: 3px solid var(--red);
+      color: var(--red);
+      padding: 10px 12px;
+      font: 900 20px/1.1 "Avenir Next", "PingFang SC", sans-serif;
+      text-align: center;
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .check-card {
+      padding: 16px;
+      min-height: 170px;
+    }
+
+    .check-card h3 {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+    }
+
+    .box {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      border: 2px solid var(--ink);
+      background: var(--white);
+    }
+
+    ul {
+      margin: 8px 0 0;
+      padding-left: 20px;
+      font-size: 16px;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    .decision {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .decision div {
+      padding: 14px;
+      border: 2px solid var(--ink);
+      background: var(--white);
+      font: 900 16px/1.45 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .footer {
+      margin: 32px 0 0;
+      padding: 18px 0 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-family: "Avenir Next", "PingFang SC", sans-serif;
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .grid.two,
+      .grid.three,
+      .check-grid,
+      .decision {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .board-note {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .topbar-inner,
+      .checklist-head,
+      .case-header {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-inner {
+        align-items: flex-start;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        padding: 28px 16px 56px;
+      }
+
+      .topbar {
+        margin: -28px -16px 22px;
+        padding: 10px 16px;
+      }
+
+      h1 {
+        font-size: 44px;
+      }
+
+      .chart-panel {
+        margin: 14px;
+        padding: 12px;
+      }
+
+      .chart-head,
+      .tick-row,
+      .interval-text,
+      .chart-zone-label {
+        font-size: 12px;
+      }
+
+      .chart-head {
+        grid-template-columns: 27% 73%;
+      }
+
+      .chart-head .ok-head {
+        grid-column: auto;
+      }
+
+      .chart-scale {
+        min-height: 210px;
+      }
+
+      .chart-zone-label.danger {
+        left: 8px;
+        max-width: calc(27% - 12px);
+      }
+
+      .chart-zone-label.ok {
+        left: 45%;
+      }
+
+      .interval-line {
+        left: 38%;
+        right: 8%;
+      }
+
+      .interval-text {
+        left: 34%;
+        right: 6%;
+      }
+
+      .tick-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tick-row span,
+      .tick-row span:nth-child(2),
+      .tick-row span:nth-child(3),
+      .tick-row span:nth-child(4) {
+        text-align: left;
+      }
+
+      .subtitle,
+      p {
+        font-size: 16px;
+      }
+
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .compare th,
+      .compare td {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      .myth {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .topbar,
+      nav,
+      .print-button {
+        display: none;
+      }
+
+      .page {
+        max-width: none;
+        padding: 0;
+      }
+
+      .hero {
+        min-height: 0;
+        page-break-after: always;
+      }
+
+      .card,
+      .callout,
+      .case-box,
+      .checklist,
+      .compare {
+        box-shadow: none;
+      }
+
+      section {
+        break-inside: avoid;
+      }
+
+      .checklist {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="mark">Δ</span> 非劣实验科普</div>
+      <nav aria-label="页面导航">
+        <a href="#what">是什么</a>
+        <a href="#margin">非劣边界</a>
+        <a href="#read">怎么看结果</a>
+        <a href="#case">案例</a>
+        <a href="#checklist">Checklist</a>
+        <button class="print-button" onclick="window.print()">打印 / 导出 PDF</button>
+      </nav>
+    </div>
+  </div>
+
+  <main class="page">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">For PM · Experiment Review</p>
+        <h1>非劣实验：不是证明更好，而是证明没差到不能接受</h1>
+        <p class="subtitle">
+          当新方案能带来成本、性能、体验、稳定性或合规收益时，我们不一定要求它把核心指标打赢旧方案。
+          但必须证明：它的损失没有越过业务提前划好的底线。
+        </p>
+        <div class="hero-warning">醒醒：没有显著差异，不等于非劣成立。样本不够、波动太大，也会看起来“没差”。</div>
+      </div>
+
+      <div class="hero-board" aria-label="非劣实验置信区间示意图">
+        <div class="board-title">非劣判断的核心：置信区间有没有越过底线</div>
+        <div class="chart-panel">
+          <div class="chart-head">
+            <span class="danger-head">不可接受下降</span>
+            <span class="ok-head">可接受范围</span>
+          </div>
+          <div class="chart-scale">
+            <div class="boundary-line"></div>
+            <div class="baseline-line"></div>
+            <div class="chart-zone-label danger">差过底线</div>
+            <div class="chart-zone-label ok">没有越过边界</div>
+            <div class="interval-line"></div>
+            <div class="interval-text">新方案估计值与置信区间</div>
+          </div>
+          <div class="tick-row" aria-label="效果差值刻度">
+            <span>-3%</span>
+            <span>-1% 非劣边界</span>
+            <span>0% 旧方案基准</span>
+            <span>+1%</span>
+          </div>
+        </div>
+        <div class="board-note">
+          <span><b>先画底线</b>业务先定义最多能接受核心指标下降多少。</span>
+          <span><b>再看区间</b>置信区间整体不越过边界，才算可证明非劣。</span>
+          <span><b>别偷换概念</b>“没显著差异”不是“安全”，可能只是没测准。</span>
+        </div>
+      </div>
+    </header>
+
+    <section id="what">
+      <div class="section-title"><span>01</span><h2>什么是非劣实验</h2></div>
+      <div class="grid two">
+        <div class="card">
+          <h3>一句话解释</h3>
+          <p>非劣实验是用来证明“新方案相比旧方案，最多只差一点点，并且这个差距在业务可接受范围内”的实验。</p>
+          <div class="formula">新方案可上线 ≠ 指标一定更高<br>新方案可上线 = 指标未明显劣化 + 其他收益值得换</div>
+        </div>
+        <div class="card">
+          <h3>一个类比</h3>
+          <p><strong>普通 A/B 实验像比赛：</strong>我要证明新方案跑得更快。</p>
+          <p><strong>非劣实验像体检：</strong>我要证明新方案没有明显不健康。</p>
+          <p>所以别拿“没跑赢”否定它，也别拿“没输得显著”放它过关。两个都粗糙。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>02</span><h2>什么时候该用，什么时候别乱用</h2></div>
+      <div class="grid three">
+        <div class="card"><span class="mini-tag">适合</span><h3>换更便宜的模型</h3><p>把部分普通闲聊、低风险问答从大模型切到小模型或缓存回复。只要满意度、追问率、会话留存没有差过底线，就能换来推理成本下降和响应更稳。</p></div>
+        <div class="card"><span class="mini-tag">适合</span><h3>优化回复速度</h3><p>例如缩短上下文、减少工具调用、先流式输出再补充细节。目标不是让业务指标暴涨，而是在完成率不明显下降的前提下，让用户更快看到答案。</p></div>
+        <div class="card"><span class="mini-tag">适合</span><h3>升级安全或风控策略</h3><p>比如加强敏感内容拦截、降低越狱风险、改写高风险回复。核心体验指标可能略有损失，但只要没有超过非劣边界，就可以用安全收益换轻微摩擦。</p></div>
+        <div class="card"><span class="mini-tag">不适合</span><h3>新 Bot 能力探索</h3><p>比如新增长文写作、图片理解、深度推理、主动推荐。你真正想知道的是“有没有明显增益”，不是“有没有差太多”，这类更适合优效实验或探索性评估。</p></div>
+        <div class="card"><span class="mini-tag">不适合</span><h3>核心体验可能被重写</h3><p>如果改动会改变 Bot 人设、回答风格、记忆策略或多轮对话逻辑，用户感知可能发生质变。别用一个“非劣”把复杂体验问题糊过去，要做分层分析和人工质检。</p></div>
+        <div class="card"><span class="mini-tag">不适合</span><h3>没有明确交换收益</h3><p>如果只是“想试试一个新 prompt”，但说不清省了什么成本、提升了什么速度、降低了什么风险，就别硬套非劣实验。否则就是给拍脑袋找统计外衣。</p></div>
+      </div>
+      <div class="callout red" style="margin-top:16px">
+        <h3>Bot 场景里的判断口诀</h3>
+        <p>如果新方案是在用“更低成本、更快速度、更安全、更稳定”交换“核心体验不能明显变差”，就适合非劣实验。 如果新方案本质是在证明“Bot 更聪明、更会聊、更能转化”，那就别偷懒，应该做优效实验、人工评测或更完整的体验评估。</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>03</span><h2>和普通 A/B 实验的区别</h2></div>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>对比项</th>
+            <th>普通 A/B 实验</th>
+            <th>非劣实验</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>核心目标</td>
+            <td>证明新方案比旧方案更好。</td>
+            <td>证明新方案没有比旧方案差太多。</td>
+          </tr>
+          <tr>
+            <td>决策问题</td>
+            <td>“能不能带来显著提升？”</td>
+            <td>“损失有没有超过我们提前接受的底线？”</td>
+          </tr>
+          <tr>
+            <td>适用场景</td>
+            <td>增长、转化、留存等明确追求指标提升的改动。</td>
+            <td>换取成本、速度、稳定性、合规、维护效率等收益的改动。</td>
+          </tr>
+          <tr>
+            <td>最大误区</td>
+            <td>把偶然波动当成真实提升。</td>
+            <td>把“不显著”当成“没影响”。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="margin">
+      <div class="section-title"><span>04</span><h2>最关键：非劣边界怎么定</h2></div>
+      <div class="grid two">
+        <div class="callout green">
+          <h3>非劣边界是什么</h3>
+          <p>它是业务在实验前说清楚的一句话：新方案最多可以比旧方案差多少。</p>
+          <p>例如旧方案 CTR 是 10%，业务最多接受相对下降 1%，那么新方案 CTR 不能低于 9.9%。</p>
+        </div>
+        <div class="callout red">
+          <h3>必须实验前定</h3>
+          <p>先看实验结果，再倒推一个刚好能过的边界，这不是实验设计，是事后找借口。</p>
+          <p>这句话要写进评审记录里，不然以后一定扯皮。</p>
+        </div>
+      </div>
+      <div class="timeline" style="margin-top:16px">
+        <div class="step"><h3>看用户损失</h3><p>这个指标下降多少，用户会明显感觉变差？例如转化路径变长、推荐明显不准、投诉上升。</p></div>
+        <div class="step"><h3>算商业损失</h3><p>GMV、付费率、留存、广告收入下降多少，对业务结果仍然可接受？别只看百分比，要换算成钱。</p></div>
+        <div class="step"><h3>量化替代收益</h3><p>新方案省了多少成本、提了多少速度、降了多少风险？如果这些收益说不清，非劣边界就很容易乱定。</p></div>
+        <div class="step"><h3>考虑可回滚性</h3><p>核心链路、不可逆影响、长期留存风险，边界要更严；边缘链路、可快速回滚，可以略放宽。</p></div>
+      </div>
+    </section>
+
+    <section id="read">
+      <div class="section-title"><span>05</span><h2>实验结果怎么看</h2></div>
+      <div class="grid three">
+        <div class="card result-card">
+          <h3>可以认为非劣</h3>
+          <p>新方案的置信区间整体没有越过非劣边界。它可能略差，也可能略好，但最坏情况仍在可接受范围内。</p>
+          <p><strong>决策：</strong>结合其他收益与护栏指标，通常可以上线。</p>
+        </div>
+        <div class="card result-card warn">
+          <h3>不能证明非劣</h3>
+          <p>点估计看起来差不多，但置信区间太宽，越过了非劣边界。常见原因是样本量不够、周期太短、指标波动大。</p>
+          <p><strong>决策：</strong>别硬上。补样本、缩小风险范围，或调整方案。</p>
+        </div>
+        <div class="card result-card bad">
+          <h3>明显劣于旧方案</h3>
+          <p>结果越过非劣边界，说明新方案带来的损失超过了业务预设底线。</p>
+          <p><strong>决策：</strong>不建议全量。除非收益巨大且业务重新接受更高损失，但那已经是新决策，不是原实验结论。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="case">
+      <div class="section-title"><span>06</span><h2>完整案例：推荐模型替换</h2></div>
+      <div class="case-box">
+        <div class="case-header">
+          <h3>场景：用新模型替换旧推荐模型</h3>
+          <strong>业务目标：降低成本，同时不牺牲核心效果</strong>
+        </div>
+        <div class="case-body">
+          <p>旧模型效果稳定，但推理成本高、响应慢。新模型成本下降 40%，响应速度提升 20%，但担心 CTR 略降。</p>
+          <div class="metrics">
+            <div class="metric"><b>CTR</b>核心指标</div>
+            <div class="metric"><b>-1%</b>非劣边界</div>
+            <div class="metric"><b>7 天</b>实验周期</div>
+            <div class="metric"><b>投诉率</b>护栏指标</div>
+          </div>
+          <div class="grid two">
+            <div class="card">
+              <h3>实验前约定</h3>
+              <ul>
+                <li>核心指标：CTR 相对下降不超过 1%。</li>
+                <li>护栏指标：投诉率、停留时长、转化率不能明显恶化。</li>
+                <li>收益指标：推理成本、响应速度必须有明确改善。</li>
+                <li>决策规则：CTR 非劣成立，且护栏稳定，才允许上线。</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>实验实际结果</h3>
+              <ul>
+                <li>CTR 点估计相对下降 0.3%。</li>
+                <li>95% 置信区间为 [-0.8%, +0.2%]，没有低于 -1% 的非劣边界。</li>
+                <li>推理成本下降 40%，响应速度提升 20%。</li>
+                <li>投诉率、停留时长、转化率无明显恶化。</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px">
+            <h3>结果解读</h3>
+            <p>这组结果不是在证明新模型 CTR 更高，而是在证明它没有差到超过业务底线。因为置信区间最差只到 -0.8%，仍然高于 -1% 的非劣边界，同时成本和响应速度收益明确，所以可以认为非劣成立。</p>
+          </div>
+          <div class="callout green" style="margin-top:16px">
+            <h3>结论</h3>
+            <p>非劣成立。新模型没有差到不可接受，同时带来明确成本和体验收益，建议灰度扩大并继续观察长期指标。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><span>07</span><h2>常见误区：这些话听到就要警惕</h2></div>
+      <div class="grid two">
+        <div class="myth"><div class="myth-mark">×</div><div><h3>“p 值不显著，所以没影响”</h3><p>错。可能是样本不够，没能力识别真实下降。非劣实验看的是置信区间和非劣边界。</p></div></div>
+        <div class="myth"><div class="myth-mark">×</div><div><h3>“实验跑完再定边界吧”</h3><p>醒醒，这叫改答案，不叫做实验。边界必须在实验前进入评审。</p></div></div>
+        <div class="myth"><div class="myth-mark">×</div><div><h3>“边界定宽一点就能过”</h3><p>边界太宽，本质是在批准业务损失。核心转化接受下降 10%，那不是非劣，是自残。</p></div></div>
+        <div class="myth"><div class="myth-mark">×</div><div><h3>“只看一个核心指标就够了”</h3><p>不够。CTR 没掉不代表体验没坏，可能投诉、停留、长期留存已经开始变差。</p></div></div>
+      </div>
+    </section>
+
+    <section id="checklist" class="checklist">
+      <div class="checklist-head">
+        <div>
+          <p class="eyebrow">One-page Template</p>
+          <h2>非劣实验评审 Checklist</h2>
+          <p>开实验前把这一页填完。填不出来，别急着开。否则实验只是在给不清楚的决策制造幻觉。</p>
+        </div>
+        <div class="stamp">先定底线<br>再跑实验</div>
+      </div>
+
+      <div class="check-grid">
+        <div class="check-card">
+          <h3><span class="box"></span>1. 新方案的额外收益明确吗？</h3>
+          <ul>
+            <li>成本下降：预计节省多少？按天、月、年折算。</li>
+            <li>体验改善：速度、步骤、打扰、稳定性提升多少？</li>
+            <li>风险收益：合规、安全、运维、长期维护是否更好？</li>
+          </ul>
+        </div>
+
+        <div class="check-card">
+          <h3><span class="box"></span>2. 指标体系完整吗？</h3>
+          <ul>
+            <li>核心指标：本次用什么指标判断非劣？</li>
+            <li>护栏指标：哪些指标恶化就必须暂停？</li>
+            <li>长期指标：是否需要上线后继续观察？</li>
+          </ul>
+        </div>
+
+        <div class="check-card">
+          <h3><span class="box"></span>3. 非劣边界提前定了吗？</h3>
+          <ul>
+            <li>最多接受核心指标下降多少？绝对值还是相对值？</li>
+            <li>这个边界对应的用户/商业损失是多少？</li>
+            <li>边界是否经过业务、数据、研发共同确认？</li>
+          </ul>
+        </div>
+
+        <div class="check-card">
+          <h3><span class="box"></span>4. 实验样本量够吗？</h3>
+          <ul>
+            <li>是否按非劣边界估算样本量？</li>
+            <li>实验周期是否覆盖周内/周末波动？</li>
+            <li>是否避免提前偷看结果后随意停实验？</li>
+          </ul>
+        </div>
+
+        <div class="check-card">
+          <h3><span class="box"></span>5. 决策规则写清楚了吗？</h3>
+          <ul>
+            <li>什么情况下全量上线？</li>
+            <li>什么情况下继续实验或扩大样本？</li>
+            <li>什么情况下回滚或重新设计方案？</li>
+          </ul>
+        </div>
+
+        <div class="check-card">
+          <h3><span class="box"></span>6. 风险预案准备了吗？</h3>
+          <ul>
+            <li>是否支持灰度、分层放量和快速回滚？</li>
+            <li>是否有监控看板和告警阈值？</li>
+            <li>上线后谁负责复盘长期指标？</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div>通过：置信区间未越过非劣边界，护栏稳定，额外收益明确。</div>
+        <div>暂缓：点估计可接受，但区间太宽，样本或周期不足。</div>
+        <div>拒绝：越过非劣边界，或护栏指标恶化，或收益说不清。</div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      建议用法：复制正文到飞书知识库；评审时单独打印 Checklist 或贴到实验需求模板里。最重要的不是懂术语，而是让每次实验前都有人敢问：“底线到底是什么？”
+    </footer>
+  </main>
+</body>
+</html>
