@@ -72,13 +72,6 @@
       justify-content: space-between;
     }
 
-    .topbar-right {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: flex-end;
-    }
-
     .brand {
       display: flex;
       gap: 10px;
@@ -158,12 +151,6 @@
       margin: 26px 0 0;
       color: var(--muted);
       font-size: 21px;
-    }
-
-    .doc-meta {
-      color: var(--muted);
-      font: 800 12px/1.4 "Avenir Next", "PingFang SC", sans-serif;
-      text-align: right;
     }
 
     .hero-warning {
@@ -732,14 +719,6 @@
         align-items: flex-start;
       }
 
-      .topbar-right {
-        align-items: flex-start;
-      }
-
-      .doc-meta {
-        text-align: left;
-      }
-
       nav {
         justify-content: flex-start;
       }
@@ -875,16 +854,13 @@
   <div class="topbar">
     <div class="topbar-inner">
       <div class="brand"><span class="mark">Δ</span> 非劣实验科普</div>
-      <div class="topbar-right">
-        <nav aria-label="页面导航">
-          <a href="#what">是什么</a>
-          <a href="#margin">非劣边界</a>
-          <a href="#read">怎么看结果</a>
-          <a href="#case">案例</a>
-          <a href="#checklist">Checklist</a>
-        </nav>
-        <div class="doc-meta">作者：Sissi / Codex ｜ 更新时间：2026-07-15 ｜ 如有疑问可联系作者</div>
-      </div>
+      <nav aria-label="页面导航">
+        <a href="#what">是什么</a>
+        <a href="#margin">非劣边界</a>
+        <a href="#read">怎么看结果</a>
+        <a href="#case">案例</a>
+        <a href="#checklist">Checklist</a>
+      </nav>
     </div>
   </div>
 
