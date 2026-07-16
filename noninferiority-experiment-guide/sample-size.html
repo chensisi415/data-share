@@ -170,6 +170,15 @@
       gap: 12px;
     }
 
+    .field-group {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field-group[hidden] {
+      display: none;
+    }
+
     .button-row {
       display: flex;
       gap: 10px;
@@ -364,7 +373,7 @@
 
     <header>
       <h1>非劣实验样本量计算器</h1>
-      <p class="lead">适用于 ARPU、收入、时长等连续型指标的近似估算。它回答的不是“新方案能不能提升”，而是“需要多少样本，才能证明新方案没有跌破业务底线”。</p>
+      <p class="lead">适用于 ARPU、收入、时长等连续型指标，也支持解决率、点击率、满意率等比例型指标的近似估算。它回答的不是“新方案能不能提升”，而是“需要多少样本，才能证明新方案没有跌破业务底线”。</p>
     </header>
 
     <section class="layout">
@@ -373,28 +382,61 @@
         <div class="panel-body">
           <div class="form-grid">
             <label>
-              旧版本 ARPU
-              <span>用于展示业务底线，不直接进入简化公式</span>
-              <input id="baseline" type="number" value="10" min="0" step="0.01">
+              指标类型
+              <span>连续型用于 ARPU、时长；比例型用于解决率、CTR、转化率等</span>
+              <select id="metricType">
+                <option value="continuous" selected>连续型指标</option>
+                <option value="proportion">比例型指标</option>
+              </select>
             </label>
 
-            <label>
-              ARPU 标准差 σ
-              <span>建议来自历史实验或近 7-30 天用户级 ARPU</span>
-              <input id="sd" type="number" value="30" min="0.0001" step="0.01">
-            </label>
-
-            <div class="two">
+            <div class="field-group" id="continuousFields">
               <label>
-                最多接受下降金额
-                <span>例如最多接受 ARPU 下降 0.3 元</span>
-                <input id="margin" type="number" value="0.3" min="0.0001" step="0.01">
+                旧版本 ARPU
+                <span>用于展示业务底线，不直接进入简化公式</span>
+                <input id="baseline" type="number" value="10" min="0" step="0.01">
               </label>
 
               <label>
+                ARPU 标准差 σ
+                <span>建议来自历史实验或近 7-30 天用户级 ARPU</span>
+                <input id="sd" type="number" value="30" min="0.0001" step="0.01">
+              </label>
+
+              <div class="two">
+                <label>
+                  最多接受下降金额
+                  <span>例如最多接受 ARPU 下降 0.3 元</span>
+                  <input id="margin" type="number" value="0.3" min="0.0001" step="0.01">
+                </label>
+
+                <label>
+                  预期真实差异 d
+                  <span>新方案 - 旧方案；通常先填 0</span>
+                  <input id="expectedDiff" type="number" value="0" step="0.01">
+                </label>
+              </div>
+            </div>
+
+            <div class="field-group" id="proportionFields" hidden>
+              <div class="two">
+                <label>
+                  旧版本比例
+                  <span>例如问题解决率 70%，这里填 70</span>
+                  <input id="baselineRate" type="number" value="70" min="0.0001" max="99.9999" step="0.01">
+                </label>
+
+                <label>
+                  最多接受下降百分点
+                  <span>例如最多接受从 70% 降到 69%，这里填 1</span>
+                  <input id="rateMargin" type="number" value="1" min="0.0001" step="0.01">
+                </label>
+              </div>
+
+              <label>
                 预期真实差异 d
-                <span>新方案 - 旧方案；通常先填 0</span>
-                <input id="expectedDiff" type="number" value="0" step="0.01">
+                <span>新方案 - 旧方案，单位为百分点；通常先填 0</span>
+                <input id="expectedRateDiff" type="number" value="0" step="0.01">
               </label>
             </div>
 
@@ -447,7 +489,7 @@
             <div class="stat">
               <strong>离底线的空间</strong>
               <b id="distance">-</b>
-              <span class="small">空间越小，需要样本越多</span>
+              <span class="small" id="distanceHelp">空间越小，需要样本越多</span>
             </div>
           </div>
 
@@ -457,13 +499,14 @@
             <summary>高级说明：公式与统计口径</summary>
             <div class="details-body">
               <div class="formula" id="formula">
-n ≈ 2 × σ² × (Zα + Zβ)² / (d - δ)²
+连续型：n ≈ 2 × σ² × (Zα + Zβ)² / (d - δ)²
+比例型：n ≈ (Zα + Zβ)² × [pC(1-pC) + pT(1-pT)] / (d - δ)²
               </div>
               <div class="note">
-                非劣边界 δ 代表最多可接受的下降。若最多接受 ARPU 下降 0.3 元，则 δ = -0.3；公式里使用的是“预期差异到非劣边界的距离”。
+                非劣边界 δ 代表最多可接受的下降。若最多接受 ARPU 下降 0.3 元，则 δ = -0.3；若解决率最多接受下降 1 个百分点，则 δ = -0.01。公式里使用的是“预期差异到非劣边界的距离”。
               </div>
               <div class="note red">
-                ARPU 可能受少数高消费用户影响。若近期活动、付费结构或用户分层变化较大，建议让数据同学用历史用户级数据复核一次。
+                这是正态近似计算器。比例型指标在基线比例很低、样本很小、或分层很多时，建议让数据同学用平台口径或仿真复核一次。
               </div>
             </div>
           </details>
@@ -492,6 +535,11 @@ n ≈ 2 × σ² × (Zα + Zβ)² / (d - δ)²
             <td>(d - δ)²，例如预期差异 0，非劣边界 -0.3，则距离是 0.3</td>
             <td>需要多少样本，才能证明新方案没有跌破业务底线？</td>
           </tr>
+          <tr>
+            <td>比例型非劣</td>
+            <td>(d - δ)²，例如预期差异 0，非劣边界 -1 个百分点，则距离是 0.01</td>
+            <td>需要多少用户，才能证明解决率、CTR、满意率等没有差过底线？</td>
+          </tr>
         </tbody>
       </table>
     </section>
@@ -499,15 +547,19 @@ n ≈ 2 × σ² × (Zα + Zβ)² / (d - δ)²
 
   <script>
     const defaults = {
+      metricType: "continuous",
       baseline: 10,
       sd: 30,
       margin: 0.3,
       expectedDiff: 0,
+      baselineRate: 70,
+      rateMargin: 1,
+      expectedRateDiff: 0,
       alpha: 0.05,
       power: 0.8
     };
 
-    const ids = ["baseline", "sd", "margin", "expectedDiff", "alpha", "power"];
+    const ids = ["metricType", "baseline", "sd", "margin", "expectedDiff", "baselineRate", "rateMargin", "expectedRateDiff", "alpha", "power"];
 
     function normalQuantile(p) {
       if (p <= 0 || p >= 1) return NaN;
@@ -550,44 +602,103 @@ n ≈ 2 × σ² × (Zα + Zβ)² / (d - δ)²
       return value.toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
+    function formatPercentPoint(value) {
+      return (value * 100).toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "pp";
+    }
+
+    function syncMode() {
+      const mode = document.getElementById("metricType").value;
+      document.getElementById("continuousFields").hidden = mode !== "continuous";
+      document.getElementById("proportionFields").hidden = mode !== "proportion";
+      document.getElementById("distanceHelp").textContent = mode === "continuous" ? "空间越小，需要样本越多" : "单位为百分点，空间越小样本越多";
+    }
+
     function calculate() {
-      const baseline = numberValue("baseline");
-      const sd = numberValue("sd");
-      const margin = numberValue("margin");
-      const expectedDiff = numberValue("expectedDiff");
+      syncMode();
+      const mode = document.getElementById("metricType").value;
       const alpha = numberValue("alpha");
       const power = numberValue("power");
-      const delta = -margin;
-      const distance = expectedDiff - delta;
       const zAlpha = normalQuantile(1 - alpha);
       const zBeta = normalQuantile(power);
       const decision = document.getElementById("decision");
 
-      if ([baseline, sd, margin, expectedDiff, alpha, power].some((v) => Number.isNaN(v)) || sd <= 0 || margin <= 0 || distance <= 0) {
+      function showInvalid(message) {
         document.getElementById("perGroup").textContent = "-";
         document.getElementById("total").textContent = "-";
         document.getElementById("distance").textContent = "-";
-        decision.textContent = "参数不成立：标准差和最多接受下降必须大于 0，且预期差异必须高于非劣边界。";
+        decision.textContent = message;
         decision.className = "note red";
         return;
       }
 
-      const perGroup = 2 * sd * sd * Math.pow(zAlpha + zBeta, 2) / Math.pow(distance, 2);
+      if ([alpha, power].some((v) => Number.isNaN(v))) {
+        showInvalid("参数不成立：显著性水平和检验功效不能为空。");
+        return;
+      }
+
+      if (mode === "continuous") {
+        const baseline = numberValue("baseline");
+        const sd = numberValue("sd");
+        const margin = numberValue("margin");
+        const expectedDiff = numberValue("expectedDiff");
+        const delta = -margin;
+        const distance = expectedDiff - delta;
+
+        if ([baseline, sd, margin, expectedDiff].some((v) => Number.isNaN(v)) || sd <= 0 || margin <= 0 || distance <= 0) {
+          showInvalid("参数不成立：标准差和最多接受下降必须大于 0，且预期差异必须高于非劣边界。");
+          return;
+        }
+
+        const perGroup = 2 * sd * sd * Math.pow(zAlpha + zBeta, 2) / Math.pow(distance, 2);
+        const total = perGroup * 2;
+        const worstAcceptable = baseline - margin;
+
+        document.getElementById("perGroup").textContent = formatInt(perGroup);
+        document.getElementById("total").textContent = formatInt(total);
+        document.getElementById("distance").textContent = formatMoney(distance);
+
+        decision.textContent = `如果旧版 ARPU 是 ${formatMoney(baseline)} 元，最多接受下降 ${formatMoney(margin)} 元，则业务底线是 ${formatMoney(worstAcceptable)} 元。按当前参数估算，每组约需要 ${formatInt(perGroup)} 个用户。`;
+        decision.className = "note green";
+
+        document.getElementById("formula").textContent =
+          `连续型指标\n` +
+          `n ≈ 2 × σ² × (Zα + Zβ)² / (d - δ)²\n` +
+          `  ≈ 2 × ${formatMoney(sd)}² × (${zAlpha.toFixed(3)} + ${zBeta.toFixed(3)})² / ${formatMoney(distance)}²\n` +
+          `  ≈ ${formatInt(perGroup)} / 组\n\n` +
+          `其中非劣边界 δ = -${formatMoney(margin)}，预期差异 d = ${formatMoney(expectedDiff)}，离底线的空间 d - δ = ${formatMoney(distance)}。`;
+        return;
+      }
+
+      const baselineRate = numberValue("baselineRate") / 100;
+      const rateMargin = numberValue("rateMargin") / 100;
+      const expectedRateDiff = numberValue("expectedRateDiff") / 100;
+      const delta = -rateMargin;
+      const distance = expectedRateDiff - delta;
+      const treatmentRate = baselineRate + expectedRateDiff;
+
+      if ([baselineRate, rateMargin, expectedRateDiff].some((v) => Number.isNaN(v)) || baselineRate <= 0 || baselineRate >= 1 || treatmentRate <= 0 || treatmentRate >= 1 || rateMargin <= 0 || distance <= 0) {
+        showInvalid("参数不成立：旧版本比例和预期实验组比例必须在 0%-100% 之间，最多接受下降必须大于 0，且预期差异必须高于非劣边界。");
+        return;
+      }
+
+      const variance = baselineRate * (1 - baselineRate) + treatmentRate * (1 - treatmentRate);
+      const perGroup = Math.pow(zAlpha + zBeta, 2) * variance / Math.pow(distance, 2);
       const total = perGroup * 2;
-      const worstAcceptable = baseline - margin;
+      const worstAcceptable = baselineRate - rateMargin;
 
       document.getElementById("perGroup").textContent = formatInt(perGroup);
       document.getElementById("total").textContent = formatInt(total);
-      document.getElementById("distance").textContent = formatMoney(distance);
+      document.getElementById("distance").textContent = formatPercentPoint(distance);
 
-      decision.textContent = `如果旧版 ARPU 是 ${formatMoney(baseline)} 元，最多接受下降 ${formatMoney(margin)} 元，则业务底线是 ${formatMoney(worstAcceptable)} 元。按当前参数估算，每组约需要 ${formatInt(perGroup)} 个用户。`;
+      decision.textContent = `如果旧版本比例是 ${(baselineRate * 100).toFixed(2)}%，最多接受下降 ${(rateMargin * 100).toFixed(2)} 个百分点，则业务底线是 ${(worstAcceptable * 100).toFixed(2)}%。按当前参数估算，每组约需要 ${formatInt(perGroup)} 个用户。`;
       decision.className = "note green";
 
       document.getElementById("formula").textContent =
-        `n ≈ 2 × σ² × (Zα + Zβ)² / (d - δ)²\n` +
-        `  ≈ 2 × ${formatMoney(sd)}² × (${zAlpha.toFixed(3)} + ${zBeta.toFixed(3)})² / ${formatMoney(distance)}²\n` +
+        `比例型指标\n` +
+        `n ≈ (Zα + Zβ)² × [pC(1-pC) + pT(1-pT)] / (d - δ)²\n` +
+        `  ≈ (${zAlpha.toFixed(3)} + ${zBeta.toFixed(3)})² × [${baselineRate.toFixed(4)} × ${(1 - baselineRate).toFixed(4)} + ${treatmentRate.toFixed(4)} × ${(1 - treatmentRate).toFixed(4)}] / ${distance.toFixed(4)}²\n` +
         `  ≈ ${formatInt(perGroup)} / 组\n\n` +
-        `其中非劣边界 δ = -${formatMoney(margin)}，预期差异 d = ${formatMoney(expectedDiff)}，离底线的空间 d - δ = ${formatMoney(distance)}。`;
+        `其中非劣边界 δ = -${formatPercentPoint(rateMargin)}，预期差异 d = ${formatPercentPoint(expectedRateDiff)}，离底线的空间 d - δ = ${formatPercentPoint(distance)}。`;
     }
 
     function reset() {
