@@ -326,7 +326,82 @@
       color: #fffdf7;
     }
 
+    .ci-tool {
+      max-width: 980px;
+      margin: 20px auto 0;
+      border: 2px solid var(--ink);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .ci-tool-head {
+      padding: 18px;
+      border-bottom: 2px solid var(--ink);
+      background: linear-gradient(90deg, var(--blue-soft), #fffdf7);
+    }
+
+    .ci-tool-head h2 {
+      margin: 0 0 6px;
+      font-family: "Iowan Old Style", "STSong", "Songti SC", serif;
+      font-size: 30px;
+    }
+
+    .ci-tool-head p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .ci-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, .95fr) minmax(320px, 1.05fr);
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .ci-result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .ci-stat {
+      border: 1px solid var(--line);
+      background: #f6f1e6;
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .ci-stat strong {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .ci-stat b {
+      display: block;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ci-stat.green {
+      background: var(--green-soft);
+    }
+
+    .ci-stat.blue {
+      background: var(--blue-soft);
+    }
+
+    .formula.inline {
+      margin-top: 12px;
+    }
+
     @media (max-width: 900px) {
+      .ci-grid,
       .result-grid {
         grid-template-columns: 1fr;
       }
@@ -342,6 +417,7 @@
       }
 
       .top,
+      .ci-result-grid,
       .two {
         grid-template-columns: 1fr;
       }
@@ -543,6 +619,75 @@
         </tbody>
       </table>
     </section>
+
+    <section class="ci-tool">
+      <div class="ci-tool-head">
+        <h2>火山 CI 换算器</h2>
+        <p>火山默认给 95% 双侧置信区间；这里把它换算成 95% 单侧下界/上界，方便做非劣判断。</p>
+      </div>
+      <div class="ci-grid">
+        <div class="form-grid">
+          <div class="two">
+            <label>
+              火山 95% 双侧 CI 下界
+              <span>例如 -28.684%，这里填 -28.684</span>
+              <input id="ciLower" type="number" value="-28.684" step="0.001">
+            </label>
+
+            <label>
+              火山 95% 双侧 CI 上界
+              <span>例如 7.857%，这里填 7.857</span>
+              <input id="ciUpper" type="number" value="7.857" step="0.001">
+            </label>
+          </div>
+
+          <label>
+            非劣边界（可选）
+            <span>越高越好填负数，例如 -30；越低越好填正数，例如 5</span>
+            <input id="ciMargin" type="number" value="-30" step="0.001">
+          </label>
+
+          <label>
+            指标方向
+            <span>越高越好看单侧下界；越低越好看单侧上界</span>
+            <select id="ciDirection">
+              <option value="higher" selected>越高越好</option>
+              <option value="lower">越低越好</option>
+            </select>
+          </label>
+        </div>
+
+        <div>
+          <div class="ci-result-grid">
+            <div class="ci-stat">
+              <strong>点估计</strong>
+              <b id="ciEstimate">-</b>
+            </div>
+            <div class="ci-stat">
+              <strong>标准误 SE</strong>
+              <b id="ciSe">-</b>
+            </div>
+            <div class="ci-stat green">
+              <strong>95% 单侧下界</strong>
+              <b id="ciOneLower">-</b>
+            </div>
+            <div class="ci-stat blue">
+              <strong>95% 单侧上界</strong>
+              <b id="ciOneUpper">-</b>
+            </div>
+          </div>
+
+          <div class="note green" id="ciDecision">填写火山双侧 CI 后会自动换算。</div>
+          <div class="formula inline" id="ciFormula">
+95% 单侧下界 = (A2+B2)/2 - 1.645*(B2-A2)/3.92
+95% 单侧上界 = (A2+B2)/2 + 1.645*(B2-A2)/3.92
+          </div>
+          <div class="note" style="margin-top:12px">
+            Excel 公式：下界 = <strong>=(A2+B2)/2 - 1.645*(B2-A2)/3.92</strong>；上界 = <strong>=(A2+B2)/2 + 1.645*(B2-A2)/3.92</strong>。
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <script>
@@ -560,6 +705,7 @@
     };
 
     const ids = ["metricType", "baseline", "sd", "margin", "expectedDiff", "baselineRate", "rateMargin", "expectedRateDiff", "alpha", "power"];
+    const ciIds = ["ciLower", "ciUpper", "ciMargin", "ciDirection"];
 
     function normalQuantile(p) {
       if (p <= 0 || p >= 1) return NaN;
@@ -604,6 +750,10 @@
 
     function formatPercentPoint(value) {
       return (value * 100).toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "pp";
+    }
+
+    function formatPctInput(value) {
+      return value.toLocaleString("zh-CN", { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + "%";
     }
 
     function syncMode() {
@@ -708,14 +858,76 @@
       calculate();
     }
 
+    function calculateCi() {
+      const lower = numberValue("ciLower");
+      const upper = numberValue("ciUpper");
+      const margin = numberValue("ciMargin");
+      const direction = document.getElementById("ciDirection").value;
+      const decision = document.getElementById("ciDecision");
+
+      function showCiInvalid(message) {
+        document.getElementById("ciEstimate").textContent = "-";
+        document.getElementById("ciSe").textContent = "-";
+        document.getElementById("ciOneLower").textContent = "-";
+        document.getElementById("ciOneUpper").textContent = "-";
+        decision.textContent = message;
+        decision.className = "note red";
+      }
+
+      if ([lower, upper].some((v) => Number.isNaN(v)) || upper <= lower) {
+        showCiInvalid("参数不成立：上界必须大于下界。请直接填火山展示的百分比数字，例如 -28.684 和 7.857。");
+        return;
+      }
+
+      const estimate = (lower + upper) / 2;
+      const se = (upper - lower) / 3.92;
+      const oneLower = estimate - 1.645 * se;
+      const oneUpper = estimate + 1.645 * se;
+
+      document.getElementById("ciEstimate").textContent = formatPctInput(estimate);
+      document.getElementById("ciSe").textContent = formatPctInput(se);
+      document.getElementById("ciOneLower").textContent = formatPctInput(oneLower);
+      document.getElementById("ciOneUpper").textContent = formatPctInput(oneUpper);
+
+      let text = `已换算：95% 单侧下界约 ${formatPctInput(oneLower)}，95% 单侧上界约 ${formatPctInput(oneUpper)}。`;
+      let pass = null;
+      if (!Number.isNaN(margin)) {
+        if (direction === "higher") {
+          pass = oneLower > margin;
+          text += pass
+            ? ` 越高越好指标看单侧下界：${formatPctInput(oneLower)} > ${formatPctInput(margin)}，非劣成立。`
+            : ` 越高越好指标看单侧下界：${formatPctInput(oneLower)} <= ${formatPctInput(margin)}，不能证明非劣。`;
+        } else {
+          pass = oneUpper < margin;
+          text += pass
+            ? ` 越低越好指标看单侧上界：${formatPctInput(oneUpper)} < ${formatPctInput(margin)}，非劣成立。`
+            : ` 越低越好指标看单侧上界：${formatPctInput(oneUpper)} >= ${formatPctInput(margin)}，不能证明非劣。`;
+        }
+      }
+
+      decision.textContent = text;
+      decision.className = pass === false ? "note red" : "note green";
+      document.getElementById("ciFormula").textContent =
+        `点估计 d = (L + U) / 2 = (${formatPctInput(lower)} + ${formatPctInput(upper)}) / 2 = ${formatPctInput(estimate)}\n` +
+        `SE = (U - L) / 3.92 = (${formatPctInput(upper)} - ${formatPctInput(lower)}) / 3.92 = ${formatPctInput(se)}\n\n` +
+        `95% 单侧下界 = d - 1.645 × SE = ${formatPctInput(oneLower)}\n` +
+        `95% 单侧上界 = d + 1.645 × SE = ${formatPctInput(oneUpper)}`;
+    }
+
     for (const id of ids) {
       document.getElementById(id).addEventListener("input", calculate);
       document.getElementById(id).addEventListener("change", calculate);
     }
 
+    for (const id of ciIds) {
+      document.getElementById(id).addEventListener("input", calculateCi);
+      document.getElementById(id).addEventListener("change", calculateCi);
+    }
+
     document.getElementById("calc").addEventListener("click", calculate);
     document.getElementById("reset").addEventListener("click", reset);
     calculate();
+    calculateCi();
   </script>
 </body>
 </html>
