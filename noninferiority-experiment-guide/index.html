@@ -594,6 +594,38 @@
       line-height: 1.1;
     }
 
+    .center-note {
+      max-width: 860px;
+      margin: 18px auto;
+      padding: 18px 20px;
+      border-top: 3px solid var(--ink);
+      border-bottom: 3px solid var(--ink);
+      background: rgba(255, 254, 250, .7);
+      text-align: center;
+      font: 900 20px/1.55 "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .kpi-strip div {
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: #f7f4ea;
+      font-family: "Avenir Next", "PingFang SC", sans-serif;
+    }
+
+    .kpi-strip b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 20px;
+      color: var(--ink);
+    }
+
     .myth {
       display: grid;
       grid-template-columns: 72px 1fr;
@@ -720,6 +752,10 @@
 
       .metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .kpi-strip {
+        grid-template-columns: 1fr;
       }
 
       .topbar-inner,
@@ -883,7 +919,7 @@
           <a href="#case">案例</a>
           <a href="#checklist">Checklist</a>
         </nav>
-        <div class="doc-meta">作者：Sissi / Codex ｜ 更新时间：2026-07-15 ｜ 如有疑问可联系作者</div>
+        <div class="doc-meta">作者：Sissi / Codex ｜ 更新时间：2026-07-23 ｜ 如有疑问可联系作者</div>
       </div>
     </div>
   </div>
@@ -950,16 +986,16 @@
     <section>
       <div class="section-title"><span>02</span><h2>什么时候该用，什么时候别乱用</h2></div>
       <div class="grid three">
-        <div class="card"><span class="mini-tag">适合</span><h3>换更便宜的模型</h3><p>把部分普通闲聊、低风险问答从大模型切到小模型或缓存回复。只要满意度、追问率、会话留存没有差过底线，就能换来推理成本下降和响应更稳。</p></div>
-        <div class="card"><span class="mini-tag">适合</span><h3>优化回复速度</h3><p>例如缩短上下文、减少工具调用、先流式输出再补充细节。目标不是让业务指标暴涨，而是在完成率不明显下降的前提下，让用户更快看到答案。</p></div>
-        <div class="card"><span class="mini-tag">适合</span><h3>升级安全或风控策略</h3><p>比如加强敏感内容拦截、降低越狱风险、改写高风险回复。核心体验指标可能略有损失，但只要没有超过非劣边界，就可以用安全收益换轻微摩擦。</p></div>
-        <div class="card"><span class="mini-tag">不适合</span><h3>新 Bot 能力探索</h3><p>比如新增长文写作、图片理解、深度推理、主动推荐。你真正想知道的是“有没有明显增益”，不是“有没有差太多”，这类更适合优效实验或探索性评估。</p></div>
-        <div class="card"><span class="mini-tag">不适合</span><h3>核心体验可能被重写</h3><p>如果改动会改变 Bot 人设、回答风格、记忆策略或多轮对话逻辑，用户感知可能发生质变。别用一个“非劣”把复杂体验问题糊过去，要做分层分析和人工质检。</p></div>
-        <div class="card"><span class="mini-tag">不适合</span><h3>没有明确交换收益</h3><p>如果只是“想试试一个新 prompt”，但说不清省了什么成本、提升了什么速度、降低了什么风险，就别硬套非劣实验。否则就是给拍脑袋找统计外衣。</p></div>
+        <div class="card"><span class="mini-tag">适合</span><h3>上线 IAA 弹屏广告</h3><p>新广告位能带来广告收入，但可能打扰用户、影响充值意愿。此时不是证明付费率更高，而是证明大盘付费率没有跌破可接受底线。</p></div>
+        <div class="card"><span class="mini-tag">适合</span><h3>增加变现但担心体验损失</h3><p>例如开屏广告、激励视频入口、弹窗频控调整。只要核心付费指标不明显变差，就可以用轻微体验成本换广告收入。</p></div>
+        <div class="card"><span class="mini-tag">适合</span><h3>替换低风险商业策略</h3><p>比如广告召回、展示频控、广告样式改版。收益来自广告填充率、eCPM 或展示量，底线通常落在付费率、留存、投诉率上。</p></div>
+        <div class="card"><span class="mini-tag">不适合</span><h3>目标就是提升付费率</h3><p>如果新方案的核心目标是让用户更愿意付费，那应该做优效实验，看付费率是否显著提升，而不是用非劣证明“没差太多”。</p></div>
+        <div class="card"><span class="mini-tag">不适合</span><h3>广告体验有明显伤害风险</h3><p>如果弹屏很强打断、关闭入口不清晰、可能诱导误触，就别只盯付费率。还要看投诉、卸载、次留、会话时长等护栏。</p></div>
+        <div class="card"><span class="mini-tag">不适合</span><h3>说不清换来了多少钱</h3><p>如果只说“多一个广告位试试看”，但说不清预期广告收入、曝光规模、频控策略，就别急着套非劣。收益不清楚，底线也很难定。</p></div>
       </div>
       <div class="callout red" style="margin-top:16px">
-        <h3>Bot 场景里的判断口诀</h3>
-        <p>如果新方案是在用“更低成本、更快速度、更安全、更稳定”交换“核心体验不能明显变差”，就适合非劣实验。 如果新方案本质是在证明“Bot 更聪明、更会聊、更能转化”，那就别偷懒，应该做优效实验、人工评测或更完整的体验评估。</p>
+        <h3>IAA 场景里的判断口诀</h3>
+        <p>如果新方案是在用“广告收入”交换“付费率不能明显变差”，就适合非劣实验。 如果新方案本质是在证明“付费率更高”，那就别偷懒，应该做优效实验。</p>
       </div>
     </section>
 
@@ -1004,7 +1040,7 @@
         <div class="callout green">
           <h3>非劣边界是什么</h3>
           <p>它是业务在实验前说清楚的一句话：新方案最多可以比旧方案差多少。</p>
-          <p>例如旧方案 CTR 是 10%，业务最多接受相对下降 1%，那么新方案 CTR 不能低于 9.9%。</p>
+          <p>例如当前大盘付费率是 5.00%，IAA 弹屏广告上线后，业务最多接受付费率下降 0.10 个百分点，那么底线就是 4.90%。</p>
         </div>
         <div class="callout red">
           <h3>必须实验前定</h3>
@@ -1042,47 +1078,58 @@
     </section>
 
     <section id="case">
-      <div class="section-title"><span>06</span><h2>完整案例：推荐模型替换</h2></div>
+      <div class="section-title"><span>06</span><h2>完整案例：IAA 弹屏广告上线</h2></div>
       <div class="case-box">
         <div class="case-header">
-          <h3>场景：用新模型替换旧推荐模型</h3>
-          <strong>业务目标：降低成本，同时不牺牲核心效果</strong>
+          <h3>场景：新增 IAA 弹屏广告</h3>
+          <strong>业务目标：增加广告收入，同时不伤大盘付费率</strong>
         </div>
         <div class="case-body">
-          <p>旧模型效果稳定，但推理成本高、响应慢。新模型成本下降 40%，响应速度提升 20%，但担心 CTR 略降。</p>
+          <p>产品希望在关键路径后增加一次 IAA 弹屏广告。这个广告位预计能带来增量广告收入，但也可能打扰用户，影响充值意愿。此时我们真正关心的不是“付费率有没有变高”，而是：</p>
+          <div class="center-note">广告上线后，大盘付费率有没有下降到业务不能接受的程度？</div>
           <div class="metrics">
-            <div class="metric"><b>CTR</b>核心指标</div>
-            <div class="metric"><b>-1%</b>非劣边界</div>
-            <div class="metric"><b>7 天</b>实验周期</div>
+            <div class="metric"><b>付费率</b>核心指标</div>
+            <div class="metric"><b>-0.10pp</b>非劣边界</div>
+            <div class="metric"><b>广告收入</b>收益指标</div>
             <div class="metric"><b>投诉率</b>护栏指标</div>
           </div>
           <div class="grid two">
             <div class="card">
               <h3>实验前约定</h3>
               <ul>
-                <li>核心指标：CTR 相对下降不超过 1%。</li>
-                <li>护栏指标：投诉率、停留时长、转化率不能明显恶化。</li>
-                <li>收益指标：推理成本、响应速度必须有明确改善。</li>
-                <li>决策规则：CTR 非劣成立，且护栏稳定，才允许上线。</li>
+                <li>核心指标：大盘付费率。</li>
+                <li>非劣边界：付费率最多下降 0.10 个百分点，例如 5.00% 不能低于 4.90%。</li>
+                <li>护栏指标：投诉率、次日留存、广告关闭率、误触反馈不能明显恶化。</li>
+                <li>收益指标：IAA 广告收入、展示量、eCPM 必须有明确增量。</li>
+                <li>决策规则：付费率非劣成立，护栏稳定，且广告收益达标，才允许扩大上线。</li>
               </ul>
             </div>
             <div class="card">
               <h3>实验实际结果</h3>
               <ul>
-                <li>CTR 点估计相对下降 0.3%。</li>
-                <li>95% 置信区间为 [-0.8%, +0.2%]，没有低于 -1% 的非劣边界。</li>
-                <li>推理成本下降 40%，响应速度提升 20%。</li>
-                <li>投诉率、停留时长、转化率无明显恶化。</li>
+                <li>付费率点估计下降 0.04 个百分点。</li>
+                <li>95% 置信区间为 [-0.08pp, +0.01pp]，下界没有低于 -0.10pp 的非劣边界。</li>
+                <li>IAA 广告收入增加，展示量和 eCPM 达到预期。</li>
+                <li>投诉率、次留、广告关闭率无明显恶化。</li>
               </ul>
+            </div>
+          </div>
+          <div class="callout green" style="margin-top:16px">
+            <h3>预期真实差异 d 怎么填</h3>
+            <p>d 是你在实验前对“新方案 - 旧方案”的合理预期，不是实验跑完后的结果。</p>
+            <div class="kpi-strip">
+              <div><b>d = 0pp</b>如果你认为弹屏广告不会影响付费率，就填 0。非劣样本量会按“从 0 到 -0.10pp 的距离”来算。</div>
+              <div><b>d = -0.03pp</b>如果你预期广告会轻微打扰用户，付费率可能下降 0.03 个百分点，就填 -0.03pp。样本量会变大。</div>
+              <div><b>别填实验结果</b>d 是实验前假设，不是看到结果后回填。事后改 d，等于给结论找台阶。</div>
             </div>
           </div>
           <div class="callout" style="margin-top:16px">
             <h3>结果解读</h3>
-            <p>这组结果不是在证明新模型 CTR 更高，而是在证明它没有差到超过业务底线。因为置信区间最差只到 -0.8%，仍然高于 -1% 的非劣边界，同时成本和响应速度收益明确，所以可以认为非劣成立。</p>
+            <p>这组结果不是在证明 IAA 弹屏广告让付费率变高，而是在证明它没有把付费率拉低到业务底线以下。因为置信区间最差只到 -0.08pp，仍然高于 -0.10pp 的非劣边界，同时广告收入收益明确，所以可以认为非劣成立。</p>
           </div>
           <div class="callout green" style="margin-top:16px">
             <h3>结论</h3>
-            <p>非劣成立。新模型没有差到不可接受，同时带来明确成本和体验收益，建议灰度扩大并继续观察长期指标。</p>
+            <p>非劣成立。IAA 弹屏广告没有让大盘付费率差到不可接受，同时带来明确广告收入，建议灰度扩大，并继续观察留存、投诉和长期付费表现。</p>
           </div>
         </div>
       </div>
@@ -1094,7 +1141,7 @@
         <div class="myth"><div class="myth-mark">×</div><div><h3>“p 值不显著，所以没影响”</h3><p>错。可能是样本不够，没能力识别真实下降。非劣实验看的是置信区间和非劣边界。</p></div></div>
         <div class="myth"><div class="myth-mark">×</div><div><h3>“实验跑完再定边界吧”</h3><p>醒醒，这叫改答案，不叫做实验。边界必须在实验前进入评审。</p></div></div>
         <div class="myth"><div class="myth-mark">×</div><div><h3>“边界定宽一点就能过”</h3><p>边界太宽，本质是在批准业务损失。核心转化接受下降 10%，那不是非劣，是自残。</p></div></div>
-        <div class="myth"><div class="myth-mark">×</div><div><h3>“只看一个核心指标就够了”</h3><p>不够。CTR 没掉不代表体验没坏，可能投诉、停留、长期留存已经开始变差。</p></div></div>
+        <div class="myth"><div class="myth-mark">×</div><div><h3>“只看付费率就够了”</h3><p>不够。付费率没掉不代表体验没坏，可能投诉、广告关闭率、次留或长期付费已经开始变差。</p></div></div>
       </div>
     </section>
 
