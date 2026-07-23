@@ -367,13 +367,13 @@
       <a class="back" href="./index.html">返回科普文档</a>
       <div class="top-right">
         <span class="tag">NON-INFERIORITY SAMPLE SIZE</span>
-        <div class="doc-meta">作者：Sissi / Codex ｜ 更新时间：2026-07-15 ｜ 如有疑问可联系作者</div>
+        <div class="doc-meta">作者：Sissi / Codex ｜ 更新时间：2026-07-23 ｜ 如有疑问可联系作者</div>
       </div>
     </div>
 
     <header>
       <h1>非劣实验样本量计算器</h1>
-      <p class="lead">适用于 ARPU、收入、时长等连续型指标，也支持解决率、点击率、满意率等比例型指标的近似估算。它回答的不是“新方案能不能提升”，而是“需要多少样本，才能证明新方案没有跌破业务底线”。</p>
+      <p class="lead">适用于 ARPU、收入、时长等连续型指标，也支持付费率、解决率、点击率等比例型指标的近似估算。它回答的不是“新方案能不能提升”，而是“需要多少样本，才能证明新方案没有跌破业务底线”。</p>
     </header>
 
     <section class="layout">
@@ -383,7 +383,7 @@
           <div class="form-grid">
             <label>
               指标类型
-              <span>连续型用于 ARPU、时长；比例型用于解决率、CTR、转化率等</span>
+              <span>连续型用于 ARPU、时长；比例型用于付费率、解决率、CTR 等</span>
               <select id="metricType">
                 <option value="continuous" selected>连续型指标</option>
                 <option value="proportion">比例型指标</option>
@@ -422,20 +422,20 @@
               <div class="two">
                 <label>
                   旧版本比例
-                  <span>例如问题解决率 70%，这里填 70</span>
-                  <input id="baselineRate" type="number" value="70" min="0.0001" max="99.9999" step="0.01">
+                  <span>例如大盘付费率 5.00%，这里填 5</span>
+                  <input id="baselineRate" type="number" value="5" min="0.0001" max="99.9999" step="0.01">
                 </label>
 
                 <label>
                   最多接受下降百分点
-                  <span>例如最多接受从 70% 降到 69%，这里填 1</span>
-                  <input id="rateMargin" type="number" value="1" min="0.0001" step="0.01">
+                  <span>例如最多接受从 5.00% 降到 4.90%，这里填 0.1</span>
+                  <input id="rateMargin" type="number" value="0.1" min="0.0001" step="0.01">
                 </label>
               </div>
 
               <label>
                 预期真实差异 d
-                <span>新方案 - 旧方案，单位为百分点；通常先填 0</span>
+                <span>新方案 - 旧方案，单位为百分点；预计无影响填 0，预计轻微下降可填 -0.03</span>
                 <input id="expectedRateDiff" type="number" value="0" step="0.01">
               </label>
             </div>
@@ -503,7 +503,7 @@
 比例型：n ≈ (Zα + Zβ)² × [pC(1-pC) + pT(1-pT)] / (d - δ)²
               </div>
               <div class="note">
-                非劣边界 δ 代表最多可接受的下降。若最多接受 ARPU 下降 0.3 元，则 δ = -0.3；若解决率最多接受下降 1 个百分点，则 δ = -0.01。公式里使用的是“预期差异到非劣边界的距离”。
+                非劣边界 δ 代表最多可接受的下降。若最多接受 ARPU 下降 0.3 元，则 δ = -0.3；若付费率最多接受下降 0.10 个百分点，则 δ = -0.001。公式里使用的是“预期差异到非劣边界的距离”。
               </div>
               <div class="note red">
                 这是正态近似计算器。比例型指标在基线比例很低、样本很小、或分层很多时，建议让数据同学用平台口径或仿真复核一次。
@@ -537,8 +537,8 @@
           </tr>
           <tr>
             <td>比例型非劣</td>
-            <td>(d - δ)²，例如预期差异 0，非劣边界 -1 个百分点，则距离是 0.01</td>
-            <td>需要多少用户，才能证明解决率、CTR、满意率等没有差过底线？</td>
+            <td>(d - δ)²，例如预期差异 0，非劣边界 -0.10 个百分点，则距离是 0.001</td>
+            <td>需要多少用户，才能证明付费率、解决率、CTR 等没有差过底线？</td>
           </tr>
         </tbody>
       </table>
@@ -552,8 +552,8 @@
       sd: 30,
       margin: 0.3,
       expectedDiff: 0,
-      baselineRate: 70,
-      rateMargin: 1,
+      baselineRate: 5,
+      rateMargin: 0.1,
       expectedRateDiff: 0,
       alpha: 0.05,
       power: 0.8
