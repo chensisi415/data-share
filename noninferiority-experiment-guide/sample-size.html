@@ -396,10 +396,6 @@
       background: var(--blue-soft);
     }
 
-    .formula.inline {
-      margin-top: 12px;
-    }
-
     @media (max-width: 900px) {
       .ci-grid,
       .result-grid {
@@ -659,14 +655,6 @@
 
         <div>
           <div class="ci-result-grid">
-            <div class="ci-stat">
-              <strong>点估计</strong>
-              <b id="ciEstimate">-</b>
-            </div>
-            <div class="ci-stat">
-              <strong>标准误 SE</strong>
-              <b id="ciSe">-</b>
-            </div>
             <div class="ci-stat green">
               <strong>95% 单侧下界</strong>
               <b id="ciOneLower">-</b>
@@ -678,13 +666,6 @@
           </div>
 
           <div class="note green" id="ciDecision">填写火山双侧 CI 后会自动换算。</div>
-          <div class="formula inline" id="ciFormula">
-95% 单侧下界 = (A2+B2)/2 - 1.645*(B2-A2)/3.92
-95% 单侧上界 = (A2+B2)/2 + 1.645*(B2-A2)/3.92
-          </div>
-          <div class="note" style="margin-top:12px">
-            Excel 公式：下界 = <strong>=(A2+B2)/2 - 1.645*(B2-A2)/3.92</strong>；上界 = <strong>=(A2+B2)/2 + 1.645*(B2-A2)/3.92</strong>。
-          </div>
         </div>
       </div>
     </section>
@@ -866,8 +847,6 @@
       const decision = document.getElementById("ciDecision");
 
       function showCiInvalid(message) {
-        document.getElementById("ciEstimate").textContent = "-";
-        document.getElementById("ciSe").textContent = "-";
         document.getElementById("ciOneLower").textContent = "-";
         document.getElementById("ciOneUpper").textContent = "-";
         decision.textContent = message;
@@ -884,8 +863,6 @@
       const oneLower = estimate - 1.645 * se;
       const oneUpper = estimate + 1.645 * se;
 
-      document.getElementById("ciEstimate").textContent = formatPctInput(estimate);
-      document.getElementById("ciSe").textContent = formatPctInput(se);
       document.getElementById("ciOneLower").textContent = formatPctInput(oneLower);
       document.getElementById("ciOneUpper").textContent = formatPctInput(oneUpper);
 
@@ -907,11 +884,6 @@
 
       decision.textContent = text;
       decision.className = pass === false ? "note red" : "note green";
-      document.getElementById("ciFormula").textContent =
-        `点估计 d = (L + U) / 2 = (${formatPctInput(lower)} + ${formatPctInput(upper)}) / 2 = ${formatPctInput(estimate)}\n` +
-        `SE = (U - L) / 3.92 = (${formatPctInput(upper)} - ${formatPctInput(lower)}) / 3.92 = ${formatPctInput(se)}\n\n` +
-        `95% 单侧下界 = d - 1.645 × SE = ${formatPctInput(oneLower)}\n` +
-        `95% 单侧上界 = d + 1.645 × SE = ${formatPctInput(oneUpper)}`;
     }
 
     for (const id of ids) {
